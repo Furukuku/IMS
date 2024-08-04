@@ -26,7 +26,7 @@ use Inertia\Inertia;
 
 // require __DIR__.'/auth.php';
 Route::get('/', function() {
-    return Inertia::render('Home');
+    return Inertia::render('Dashboard');
 });
 
 Route::inertia('/login', 'Login');

@@ -1,9 +1,9 @@
 
 interface InputFieldProps {
-  label: string,
-  fieldType: string,
-  id: string,
-  style: string
+  label: string;
+  fieldType: string;
+  id: string;
+  style: string;
 }
 
 const InputField = ({ label, fieldType, id, style, }: InputFieldProps) => {
