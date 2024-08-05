@@ -11,7 +11,7 @@ const Home = ({ children }: { children: ReactNode } ) => {
         navBar={navBar}
         setNavBar={setNavBar}
       />
-      <div className="w-60 hidden lg:block" />
+      <div className="w-60 w-0 lg:w-60 transition-all duration-300 ease-in-out" />
       <section className="flex-1">
         <Header 
           navBar={navBar}

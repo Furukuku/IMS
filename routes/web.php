@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Auth\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -29,6 +29,7 @@ Route::get('/', function() {
     return Inertia::render('Dashboard');
 });
 
-Route::inertia('/login', 'Login');
+Route::inertia('/login', 'Login')->name('login');
 Route::inertia('/register', 'Register');
-    
+
+Route::post('/register', [UserController::class, 'register'])->name('register');
