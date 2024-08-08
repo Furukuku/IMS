@@ -1,6 +1,10 @@
 import Home from "@/Layouts/Home";
+import { PageProps } from "@/types";
+import { usePage } from "@inertiajs/react";
 
 const Dashboard = () => {
+  const { flash } = usePage<PageProps>().props;
+
   return (
     <Home>
       <main className="flex flex-col lg:flex-row py-5 px-14 lg:px-10">

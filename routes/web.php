@@ -1,6 +1,8 @@
 <?php
 
-use App\Http\Controllers\Auth\UserController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\LogoutController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -25,11 +27,18 @@ use Inertia\Inertia;
 // });
 
 // require __DIR__.'/auth.php';
-Route::get('/', function() {
-    return Inertia::render('Dashboard');
+Route::middleware('auth')->group(function () {
+    Route::get('/', function() {
+        return Inertia::render('Dashboard');
+    })->name('dashboard');
+
+    Route::post('/logout', [LogoutController::class, 'logout']);
 });
 
-Route::inertia('/login', 'Login')->name('login');
-Route::inertia('/register', 'Register');
+Route::middleware('guest')->group(function () {
+    Route::inertia('/login', 'Login')->name('login');
+    Route::inertia('/register', 'Register')->name('register');
+    Route::post('/register', [RegisterController::class, 'store']);
+    Route::post('/login', [LoginController::class, 'store']);
+});
 
-Route::post('/register', [UserController::class, 'register'])->name('register');

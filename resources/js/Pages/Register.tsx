@@ -17,7 +17,7 @@ const Register = () => {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-    post(route('register'));
+    post('/register');
   };
 
   return (

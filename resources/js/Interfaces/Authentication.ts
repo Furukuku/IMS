@@ -8,3 +8,8 @@ export interface UserRegister {
   password: string;
   password_confirmation: string;
 }
+
+export interface UserLogin {
+  email: string;
+  password: string;
+}

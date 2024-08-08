@@ -1,12 +1,13 @@
-import { UserRegister } from "@/Interfaces/Authentication";
+import { UserLogin, UserRegister } from "@/Interfaces/Authentication";
 import { ChangeEvent } from "react";
 
 type setDataByMethod<TForm> = (data: (previousData: TForm) => TForm) => void;
+type userDetails = UserRegister | UserLogin;
 
 interface InputFieldProps {
   label: string;
   value: string;
-  setUserData: setDataByMethod<UserRegister>;
+  setUserData: setDataByMethod<userDetails>;
   fieldType: string;
   fieldName: string;
   disabled: boolean;
@@ -15,7 +16,7 @@ interface InputFieldProps {
   style: string;
 }
 
-const InputField = ({ 
+const InputField = ({
   label, 
   value, 
   setUserData, 
@@ -27,7 +28,7 @@ const InputField = ({
   style 
 }: InputFieldProps) => {
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    setUserData((prev: UserRegister) => ({
+    setUserData((prev: userDetails) => ({
       ...prev,
       [e.target.name]: e.target.value
     }))

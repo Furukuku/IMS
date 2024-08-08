@@ -6,9 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 
-class UserController extends Controller
+class RegisterController extends Controller
 {
-    public function register(Request $request) 
+    public function store(Request $request) 
     {
         $request->validate([
             'first_name' => ['required', 'max:50'],
@@ -16,7 +16,7 @@ class UserController extends Controller
             'company_name' => ['required', 'max:100'],
             'company_address' => ['required', 'max:100'],
             'student_no' => ['required', 'max:10'],
-            'email' => ['required', 'email', 'max:100'],
+            'email' => ['required', 'email', 'max:100', 'unique:users'],
             'password' => ['required', 'min:8', 'max:255', 'confirmed'],
             'password_confirmation' => ['required', 'max:255']
         ]);
@@ -28,14 +28,15 @@ class UserController extends Controller
         $user->company_name = $request->company_name;
         $user->company_address = $request->company_address;
         $user->email = $request->email;
-        $user->password = $request->password;
+        $user->password = Hash::make($request->password);
         $users = User::count();
-        if ($users === 0) {
+        if ($users === 0)
             $user->is_admin = true;
-        }
 
         $user->save();
 
-        return to_route('login');
+        Auth::login($user);
+
+        return to_route('dashboard');
     }
 }
