@@ -11,14 +11,14 @@ class RegisterController extends Controller
     public function store(Request $request) 
     {
         $request->validate([
-            'first_name' => ['required', 'max:50'],
-            'last_name' => ['required', 'max:50'],
-            'company_name' => ['required', 'max:100'],
-            'company_address' => ['required', 'max:100'],
-            'student_no' => ['required', 'max:10'],
-            'email' => ['required', 'email', 'max:100', 'unique:users'],
-            'password' => ['required', 'min:8', 'max:255', 'confirmed'],
-            'password_confirmation' => ['required', 'max:255']
+            'first_name' => ['required', 'max:50', 'string'],
+            'last_name' => ['required', 'max:50', 'string'],
+            'company_name' => ['required', 'max:100', 'string'],
+            'company_address' => ['required', 'max:100', 'string'],
+            'student_no' => ['required', 'max:10', 'string'],
+            'email' => ['required', 'email', 'max:100', 'unique:users', 'string'],
+            'password' => ['required', 'min:8', 'max:255', 'confirmed', 'string'],
+            'password_confirmation' => ['required', 'max:255', 'string']
         ]);
         
         $user = new User();

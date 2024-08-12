@@ -10,7 +10,17 @@ export interface User {
     email_verified_at: Date | null;
     is_admin: boolean;
     status: string;
-    created_at: Date | null;
+    created_at: Date;
+    updated_at: Date | null;
+}
+
+export interface Post {
+    id: number;
+    user_id: number;
+    title: string;
+    description: string;
+    is_uploadable: boolean;
+    created_at: Date;
     updated_at: Date | null;
 }
 

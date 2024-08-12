@@ -1,8 +1,9 @@
 import { UserLogin, UserRegister } from "@/Interfaces/Authentication";
+import { PostData } from "@/Interfaces/Post";
 import { ChangeEvent } from "react";
 
 type setDataByMethod<TForm> = (data: (previousData: TForm) => TForm) => void;
-type userDetails = UserRegister | UserLogin;
+type userDetails = UserRegister | UserLogin | PostData;
 
 interface InputFieldProps {
   label: string;
