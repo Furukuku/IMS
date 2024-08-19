@@ -1,14 +1,14 @@
 import { Link, usePage } from "@inertiajs/react";
 import { NavItems } from "@/Interfaces/NavBar";
 
-const NavItem = ({ label, links, icon }: NavItems) => {
-  const { url } = usePage();
-
+const NavItem = ({ label, link, components, icon }: NavItems) => {
+  const { component } = usePage();
+  
   return (
     <li>
       <Link 
-        href={links[0]}
-        className={`flex items-center gap-2 text-zinc-200 p-3 rounded-md ${links.includes(url) && 'bg-white bg-opacity-25'}`}
+        href={link}
+        className={`flex items-center gap-2 text-zinc-200 p-3 rounded-md ${components.includes(component) && 'bg-white bg-opacity-25'}`}
       >
         {icon}
         {label}

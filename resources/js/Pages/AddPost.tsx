@@ -1,7 +1,7 @@
 import InputField from "@/Components/InputField";
 import { PostData } from "@/Interfaces/Post";
 import Home from "@/Layouts/Home";
-import { useForm } from "@inertiajs/react";
+import { Link, useForm } from "@inertiajs/react";
 import { ChangeEvent, DragEvent, FormEvent, useEffect, useRef, useState } from "react";
 import { IoMdArrowBack, IoIosClose  } from "react-icons/io";
 
@@ -90,9 +90,12 @@ const AddPost = () => {
   return (
     <Home>
       <main className="flex py-5 px-14 lg:px-10">
-        <div className="pe-10">
+        <Link 
+          href={route('dashboard')}
+          className="pe-10"
+        >
           <IoMdArrowBack  className="text-2xl cursor-pointer" />
-        </div>
+        </Link>
         <form 
           className="bg-white border shadow p-10 flex-1"
           onSubmit={handlePostSubmit}

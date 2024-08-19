@@ -13,11 +13,29 @@ class PostController extends Controller
 {
     /**
      * Gets the posts of the user.
+     * @return \Inertia\Inertia
      */
     public function index()
     {
         $posts = Post::where('user_id', auth()->id())->latest()->get();
         return Inertia::render('Dashboard', ['posts' => $posts]);
+    }
+
+    /**
+     * Gets the post based on id.
+     * @param int $id
+     * @return \Inertia\Inertia
+     */
+    public function show($id)
+    {
+        $post = Post::with([
+            'files', 
+            'comments' => function($query) {
+                $query->with('user')->withCount('replies')->latest()->limit(5);
+            }
+        ])->withCount(['files', 'comments'])->find($id);
+
+        return Inertia::render('ViewPost', ['post' => $post]);
     }
 
     /**
@@ -63,5 +81,23 @@ class PostController extends Controller
         }
 
         return to_route('dashboard')->with('message', 'Post added successfully!');
+    }
+
+    /**
+     * @param string $filename
+     */
+    public function downloadFile($filename)
+    {
+        $url = Storage::disk('public')->path('files/' . $filename);
+        return response()->download($url , $filename);
+    }
+
+    /**
+     * @param string $filename
+     */
+    public function showFile($filename)
+    {
+        $url = Storage::disk('public')->path('files/' . $filename);
+        return response()->file($url);
     }
 }

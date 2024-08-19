@@ -10,25 +10,30 @@ const NavBar = ({ navBar, setNavBar }: NavBarProps) => {
   const navItems: NavItems[] = [
     {
       label: 'Dashboard',
-      links: [
-        '/', 
-        '/add-post'
+      link: '/',
+      components: [
+        'Dashboard', 
+        'AddPost',
+        'ViewPost'
       ],
       icon: <MdSpaceDashboard />
     },
     {
       label: 'Students',
-      links: ['/students'],
+      link: '/students',
+      components: ['Students'],
       icon: <PiStudentFill />
     },
     {
       label: 'Messages',
-      links: ['/messages'],
+      link: '/messages',
+      components: ['Messages'],
       icon: <AiFillMessage />
     },
     {
       label: 'Account',
-      links: ['/account'],
+      link: '/account',
+      components: ['Account'],
       icon: <MdManageAccounts />
     },
   ];
@@ -53,7 +58,8 @@ const NavBar = ({ navBar, setNavBar }: NavBarProps) => {
           <NavItem 
             key={navItem.label}
             label={navItem.label}
-            links={navItem.links}
+            link={navItem.link}
+            components={navItem.components}
             icon={navItem.icon}
           />
         ))}

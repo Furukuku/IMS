@@ -2,7 +2,8 @@ import { ReactNode, Dispatch, SetStateAction } from "react";
 
 export interface NavItems {
   label: string;
-  links: string[];
+  link: string;
+  components: string[];
   icon: ReactNode;
 }
 

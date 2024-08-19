@@ -4,9 +4,11 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\CommentController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Storage;
 
 // Route::get('/', function () {
 //     return Inertia::render('Welcome', [
@@ -31,7 +33,16 @@ use Inertia\Inertia;
 Route::middleware('auth')->group(function () {
     Route::get('/', [PostController::class, 'index'])->name('dashboard');
     Route::inertia('/add-post', 'AddPost')->name('add-post');
+    Route::get('/post/{id}', [PostController::class, 'show'])->name('view-post');
+    Route::get('/download-file/{filename}', [PostController::class, 'downloadFile'])->name('download-file');
+    Route::get('/show-file/{filename}', [PostController::class, 'showFile'])->name('show-file');
     Route::post('/add-post', [PostController::class, 'store']);
+
+    Route::prefix('comments')->controller(CommentController::class)->name('comments.')->group(function () {
+        Route::post('/add', 'store')->name('add');
+        Route::get('/show-more', 'showMore')->name('show-more');
+    });
+
     Route::post('/logout', [LogoutController::class, 'logout']);
 });
 

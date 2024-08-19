@@ -20,6 +20,31 @@ export interface Post {
     title: string;
     description: string;
     is_uploadable: boolean;
+    files: File[];
+    files_counts: number;
+    comments: Comment[];
+    comments_count: number;
+    created_at: Date;
+    updated_at: Date | null;
+}
+
+export interface File {
+    id: number;
+    post_id: number;
+    user_id: number;
+    path: string;
+    is_submitted: boolean;
+    created_at: Date;
+    updated_at: Date | null;
+}
+
+export interface Comment {
+    id: number;
+    user_id: number;
+    post_id: number;
+    content: string;
+    replies_count: number;
+    user: User;
     created_at: Date;
     updated_at: Date | null;
 }
