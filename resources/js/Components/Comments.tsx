@@ -1,9 +1,9 @@
-import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, Dispatch, FormEvent, SetStateAction, useEffect, useRef, useState } from "react";
 import CommentComponent from "./Comment";
 import { IoIosSend } from "react-icons/io";
 import { useForm } from "@inertiajs/react";
 import { Comment } from "@/types";
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import ShowMoreButton from "./ShowMoreButton";
 
 interface CommentFormData {
   post_id: number;
@@ -33,31 +33,24 @@ const Comments = ({
     });
   };
 
-  const handleCommentSubmit = (e: FormEvent<HTMLFormElement>): void => {
+  const handleCommentSubmit = (e: FormEvent<HTMLFormElement>): void => { 
     e.preventDefault();
     if (data.content.length > 0) {
-      post(route('comments.add'), { preserveScroll: true });
+      post(route('comments.add'), { preserveScroll: true, preserveState: true });
     }
   };
 
-  async function getMoreComments() {
+  const handleShowMoreClick = async () => {
     try {
-      setIsFetchingComments(true);
-      const response = await fetch(`/comments/show-more?post_id=${postId}&offset=${visibleComments.length}`);
-      const data = await response.json();
-      return data;
+      const addedComments = await getMoreComments(postId, visibleComments, setIsFetchingComments);
+      setVisibleComments([
+        ...visibleComments,
+        ...addedComments
+      ]);
+      setIsFetchingComments(false);
     } catch (err) {
       console.log(err);
     }
-  }
-
-  const handleShowMoreClick = async () => {
-    const addedComments = await getMoreComments();
-    setVisibleComments([
-      ...visibleComments,
-      ...addedComments
-    ]);
-    setIsFetchingComments(false);
   };
 
   useEffect(() => {
@@ -75,6 +68,8 @@ const Comments = ({
         {visibleComments.map(comment => (
           <CommentComponent 
             key={comment.id}
+            postId={comment.post_id}
+            commentId={comment.id}
             username={`${comment.user.first_name} ${comment.user.last_name}`}
             content={comment.content}
             replyCount={comment.replies_count}
@@ -82,19 +77,12 @@ const Comments = ({
           />
         ))}
       </ul>
-      <section className="flex flex-col items-center gap-1 mb-10">
-        {commentCount != visibleComments.length && (
-          <>
-            <button 
-              className="text-sm underline"
-              onClick={handleShowMoreClick}
-            >
-              Show more
-            </button>
-            {isFetchingComments && <AiOutlineLoading3Quarters className="animate-spin" />}
-          </>
-        )}
-      </section>
+      <ShowMoreButton 
+        dataCount={commentCount}
+        visibleData={visibleComments}
+        isProcessing={isFetchingComments}
+        handleShowMoreClick={handleShowMoreClick}
+      />
       <form 
         className="ps-3"
         onSubmit={handleCommentSubmit}
@@ -120,5 +108,21 @@ const Comments = ({
     </section>
   );
 };
+
+
+async function getMoreComments(
+  postId: number, 
+  visibleComments: Comment[], 
+  setIsFetchingComments: Dispatch<SetStateAction<boolean>>
+) {
+  try {
+    setIsFetchingComments(true);
+    const response = await fetch(`/comment/show-more?post_id=${postId}&offset=${visibleComments.length}`);
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+}
 
 export default Comments;

@@ -34,6 +34,7 @@ class CommentController extends Controller
                         ->where('post_id', $request->post_id)
                         ->latest()
                         ->skip($request->offset)
+                        ->orderByRaw('user_id = ? DESC', [auth()->id()])
                         ->take(5)
                         ->get();
 

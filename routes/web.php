@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\ReplyController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -38,7 +39,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/show-file/{filename}', [PostController::class, 'showFile'])->name('show-file');
     Route::post('/add-post', [PostController::class, 'store']);
 
-    Route::prefix('comments')->controller(CommentController::class)->name('comments.')->group(function () {
+    Route::prefix('reply')->controller(ReplyController::class)->name('replies.')->group(function() {
+        Route::post('/add', 'store')->name('add');
+        Route::get('/show', 'show')->name('show');
+    });
+
+    Route::prefix('comment')->controller(CommentController::class)->name('comments.')->group(function() {
         Route::post('/add', 'store')->name('add');
         Route::get('/show-more', 'showMore')->name('show-more');
     });

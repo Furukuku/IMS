@@ -17,7 +17,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::where('user_id', auth()->id())->latest()->get();
+        $posts = Post::latest()->get();
         return Inertia::render('Dashboard', ['posts' => $posts]);
     }
 
@@ -31,7 +31,7 @@ class PostController extends Controller
         $post = Post::with([
             'files', 
             'comments' => function($query) {
-                $query->with('user')->withCount('replies')->latest()->limit(5);
+                $query->with('user')->withCount('replies')->orderByRaw('user_id = ? DESC', [auth()->id()])->latest()->limit(5);
             }
         ])->withCount(['files', 'comments'])->find($id);
 

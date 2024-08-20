@@ -49,6 +49,16 @@ export interface Comment {
     updated_at: Date | null;
 }
 
+export interface Reply {
+    id: number;
+    user_id: number;
+    comment_id: number;
+    content: string;
+    user: User;
+    created_at: Date;
+    updated_at: Date | null;
+}
+
 export type PageProps<T extends Record<string, unknown> = Record<string, unknown>> = T & {
     auth: {
         user: User;
