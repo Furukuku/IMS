@@ -8,7 +8,7 @@ const Dashboard = ({ posts }: { posts: Post[] }) => {
   const postList = posts.map(post => (
     <Link
       key={post.id}
-      href={route('view-post', { id: post.id })}
+      href={route('post.view', { id: post.id })}
     >
       <article 
         className="border px-5 py-4 rounded-md shadow mb-5"
@@ -25,7 +25,7 @@ const Dashboard = ({ posts }: { posts: Post[] }) => {
         <div className="pe-10 pb-5 pt-0 lg:pt-5 sticky top-1">
           <Link
             className="bg-zinc-950 text-white px-4 py-2.5 rounded-md sticky top-1"
-            href={route('add-post')}
+            href={route('post.add')}
           >
             Post
           </Link>

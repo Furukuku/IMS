@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ReplyController;
 use Illuminate\Foundation\Application;
@@ -33,11 +34,18 @@ use Illuminate\Support\Facades\Storage;
 // require __DIR__.'/auth.php';
 Route::middleware('auth')->group(function () {
     Route::get('/', [PostController::class, 'index'])->name('dashboard');
-    Route::inertia('/add-post', 'AddPost')->name('add-post');
-    Route::get('/post/{id}', [PostController::class, 'show'])->name('view-post');
-    Route::get('/download-file/{filename}', [PostController::class, 'downloadFile'])->name('download-file');
-    Route::get('/show-file/{filename}', [PostController::class, 'showFile'])->name('show-file');
-    Route::post('/add-post', [PostController::class, 'store']);
+    Route::prefix('post')->controller(PostController::class)->name('post.')->group(function() {
+        Route::inertia('/add', 'AddPost')->name('add');
+        Route::post('/add', [PostController::class, 'store']);
+        Route::get('/{id}', [PostController::class, 'show'])->name('view');
+        Route::get('/edit/{id}', [PostController::class, 'edit'])->name('edit');
+        Route::put('/update', [PostController::class, 'update'])->name('update');
+    });
+
+    Route::prefix('file')->controller(FileController::class)->name('file.')->group(function() {
+        Route::get('/show/{filename}', [FileController::class, 'show'])->name('show');
+        Route::get('/download/{filename}', [FileController::class, 'download'])->name('download');
+    });
 
     Route::prefix('reply')->controller(ReplyController::class)->name('replies.')->group(function() {
         Route::post('/add', 'store')->name('add');

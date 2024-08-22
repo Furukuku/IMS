@@ -8,6 +8,7 @@ use Inertia\Inertia;
 use Illuminate\Validation\Rules\File;
 use Illuminate\Support\Facades\Storage;
 use App\Models\File as FileModel;
+use App\Rules\LimitFiles;
 
 class PostController extends Controller
 {
@@ -69,7 +70,7 @@ class PostController extends Controller
         $post->is_uploadable = $request->is_uploadable;
         $post->save();
 
-        if ($post->id) {
+        if ($post && !is_null($request->file('files'))) {
             foreach ($request->file('files') as $uploaded_file) {
                 $path = $uploaded_file->store('files');
                 $file = new FileModel();
@@ -84,20 +85,68 @@ class PostController extends Controller
     }
 
     /**
-     * @param string $filename
+     * Renders the post editing page.
+     * @param \Illuminate\Http\Request $request
      */
-    public function downloadFile($filename)
+    public function edit(Request $request)
     {
-        $url = Storage::disk('public')->path('files/' . $filename);
-        return response()->download($url , $filename);
+        $post = Post::with('files')->find($request->id);
+        return Inertia::render('EditPost', ['post' => $post]);
     }
 
     /**
-     * @param string $filename
+     * Updates a post.
+     * @param \Illuminate\Http\Request $request
      */
-    public function showFile($filename)
+    public function update(Request $request)
     {
-        $url = Storage::disk('public')->path('files/' . $filename);
-        return response()->file($url);
+        $request->validate([
+            'id' => ['required', 'integer'],
+            'title' => ['required', 'max:100', 'string'],
+            'description' => ['required', 'max:2000', 'string'],
+            'is_uploadable' => ['required', 'boolean'],
+            'removed_files' => ['array'],
+            'files' => ['array', new LimitFiles($request->id)],
+            'files.*' => [File::types([
+                'pdf',
+                'docx',
+                'pptx',
+                'txt',
+                'xlsx',
+                'png',
+                'jpg',
+                'jpeg'
+            ])->max('5mb')]
+        ]);
+        
+        if ($request->removed_files) {
+            foreach ($request->removed_files as $file_id) {
+                $file = FileModel::find($file_id);
+                
+                if ($file) {
+                    Storage::disk('public')->delete($file->path);
+                    $file->delete();
+                }
+            }
+        }
+
+        $post = Post::find($request->id);
+        $post->title = $request->title;
+        $post->description = $request->description;
+        $post->is_uploadable = $request->is_uploadable;
+        $post->save();
+
+        if ($post && !is_null($request->file('files'))) {
+            foreach ($request->file('files') as $new_file) {
+                $path = $new_file->store('files');
+                $file = new FileModel();
+                $file->post_id = $post->id;
+                $file->user_id = $post->user_id;
+                $file->path = $path;
+                $file->save();
+            }
+        }
+
+        return to_route('post.view', ['id' => $request->id])->with('message', 'Post updated successfully!');
     }
 }

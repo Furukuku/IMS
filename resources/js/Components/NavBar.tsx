@@ -14,7 +14,8 @@ const NavBar = ({ navBar, setNavBar }: NavBarProps) => {
       components: [
         'Dashboard', 
         'AddPost',
-        'ViewPost'
+        'ViewPost',
+        'EditPost'
       ],
       icon: <MdSpaceDashboard />
     },

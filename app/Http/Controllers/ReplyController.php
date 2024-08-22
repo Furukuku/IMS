@@ -20,7 +20,7 @@ class ReplyController extends Controller
         $reply->content = $request->content;
         $reply->save();
 
-        return to_route('view-post', ['id' => $request->post_id]);
+        return to_route('post.view', ['id' => $request->post_id]);
     }
 
     public function show(Request $request)
