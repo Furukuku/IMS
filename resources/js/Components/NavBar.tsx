@@ -44,7 +44,7 @@ const NavBar = ({ navBar, setNavBar }: NavBarProps) => {
   };
 
   return (
-    <nav className={`bg-zinc-950 w-60 py-10 px-5 fixed inset-y-0 z-10 lg:left-0 ${navBar ? 'left-0' : '-left-60'} transition-all duration-300 ease-in-out`}>
+    <nav className={`bg-zinc-950 w-60 py-10 z-20 px-5 fixed inset-y-0 z-10 lg:left-0 ${navBar ? 'left-0' : '-left-60'} transition-all duration-300 ease-in-out`}>
       <IoIosClose 
         className="text-white text-3xl absolute right-2 top-2 block lg:hidden cursor-pointer" 
         onClick={handleNavBarClose}

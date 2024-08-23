@@ -40,6 +40,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/{id}', [PostController::class, 'show'])->name('view');
         Route::get('/edit/{id}', [PostController::class, 'edit'])->name('edit');
         Route::put('/update', [PostController::class, 'update'])->name('update');
+        Route::delete('/destroy', [PostController::class, 'destroy'])->name('destroy');
     });
 
     Route::prefix('file')->controller(FileController::class)->name('file.')->group(function() {

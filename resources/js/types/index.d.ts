@@ -32,7 +32,8 @@ export interface File {
     id: number;
     post_id: number;
     user_id: number;
-    path: string;
+    unique_name: string;
+    orig_name: string;
     is_submitted: boolean;
     created_at: Date;
     updated_at: Date | null;

@@ -7,6 +7,10 @@ use App\Models\Reply;
 
 class ReplyController extends Controller
 {
+    /**
+     * Stores a new reply.
+     * @param \Illuminate\Http\Request $request
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -23,6 +27,10 @@ class ReplyController extends Controller
         return to_route('post.view', ['id' => $request->post_id]);
     }
 
+    /**
+     * Gets 5 more replies.
+     * @param \Illuminate\Http\Request $request
+     */
     public function show(Request $request)
     {
         $replies = Reply::with('user')
@@ -31,6 +39,7 @@ class ReplyController extends Controller
             ->skip($request->offset)
             ->take(5)
             ->get();
+            
         return $replies;
     }
 }

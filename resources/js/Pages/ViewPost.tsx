@@ -7,17 +7,20 @@ import { SlOptionsVertical } from "react-icons/sl";
 import { FaFileDownload } from "react-icons/fa";
 import Comments from "@/Components/Comments";
 import { useState } from "react";
+import DeleteModal from "@/Components/DeleteModal";
 
 
 const ViewPost = ({ post }: { post: Post }) => {
   const [showPostOptions, setShowOptions] = useState<boolean>(false);
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
   const { user } = usePage<PageProps>().props.auth;
   const handleDowloadClick = (filename: string): void => {
     window.location.href = route('file.download', { filename: filename });
   };
 
   const handleDeletePostClick = (): void => {
-    console.log('delete');
+    setShowOptions(false);
+    setShowDeleteModal(true);
   };
   
   return (
@@ -38,14 +41,14 @@ const ViewPost = ({ post }: { post: Post }) => {
             {user.id === post.user_id && (
               <div className="relative">
                 <button 
-                  className="text-xl"
+                  className="text-xl z-0"
                   onClick={() => setShowOptions(true)}
                 >
                   <SlOptionsVertical />
                 </button>
                 {showPostOptions && (
                   <>
-                    <ul className="absolute right-2 top-3 bg-white shadow-sm border rounded text-sm divide-y-4 divide-transparent py-1 z-20">
+                    <ul className="absolute right-2 top-3 bg-white shadow-sm border rounded text-sm divide-y-4 divide-transparent py-1 z-40">
                       <li>
                         <Link 
                           href={route('post.edit', { id: post.id })}
@@ -67,10 +70,16 @@ const ViewPost = ({ post }: { post: Post }) => {
                       </li>
                     </ul>
                     <div 
-                      className="fixed bg-zinc-950 bg-opacity-5 inset-0 z-10" 
+                      className="fixed bg-zinc-950 bg-opacity-5 inset-0 z-30" 
                       onClick={() => setShowOptions(false)}
                     />
                   </>
+                )}
+                {showDeleteModal && (
+                  <DeleteModal 
+                    id={post.id}
+                    setShowModal={setShowDeleteModal}
+                  />
                 )}
               </div>
             )}
@@ -85,15 +94,15 @@ const ViewPost = ({ post }: { post: Post }) => {
                 className="flex gap-2"
               >
                 <a 
-                  href={route('file.show', { filename: file.path.slice(6) })}
+                  href={route('file.show', { filename: file.unique_name })}
                   target="_blank"
                   className="bg-zinc-100 border rounded-md shadow-sm inline-block p-2 text-sm hover:underline hover:bg-zinc-200"
                 >
-                  {file.path.slice(6)}
+                  {file.orig_name}
                 </a>
                 <button
                   className="bg-zinc-100 border px-2.5 rounded-md shadow-sm hover:bg-zinc-200"
-                  onClick={() => handleDowloadClick(file.path.slice(6))}
+                  onClick={() => handleDowloadClick(file.unique_name)}
                 >
                   <FaFileDownload />
                 </button>

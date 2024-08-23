@@ -13,7 +13,8 @@ class File extends Model
     protected $fillable = [
         'post_id',
         'user_id',
-        'path',
+        'unique_name',
+        'orig_name',
         'is_submitted'
     ];
 

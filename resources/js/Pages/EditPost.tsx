@@ -133,7 +133,7 @@ const EditPost = ({ post }: { post: Post }) => {
                   {oldFiles.map((file) => (
                     <li key={file.id}>
                       <div className={`flex justify-between items-center border rounded px-2 py-1 bg-zinc-100`}>
-                        <p className="text-sm">{file.path}</p>
+                        <p className="text-sm">{file.unique_name}</p>
                         <IoIosClose 
                           className="cursor-pointer text-xl"
                           onClick={() => handleRemoveOldFile(file.id)}

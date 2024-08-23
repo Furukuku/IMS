@@ -17,7 +17,7 @@ const Header = ({ navBar, setNavBar }: NavBarProps) => {
 
   return (
     <>
-      <header className="flex lg:justify-end justify-between items-center px-5 py-3 border shadow sticky top-0 bg-white">
+      <header className="flex lg:justify-end justify-between items-center px-5 py-3 border shadow sticky top-0 bg-white z-10">
         <IoMenu 
           className="text-2xl block lg:hidden cursor-pointer"
           onClick={handleNavBarOpen} 

@@ -76,7 +76,8 @@ class PostController extends Controller
                 $file = new FileModel();
                 $file->post_id = $post->id;
                 $file->user_id = auth()->id();
-                $file->path = $path;
+                $file->unique_name = basename($path);
+                $file->orig_name = $uploaded_file->getClientOriginalName();
                 $file->save();
             }
         }
@@ -118,13 +119,13 @@ class PostController extends Controller
                 'jpeg'
             ])->max('5mb')]
         ]);
-        
+
         if ($request->removed_files) {
             foreach ($request->removed_files as $file_id) {
                 $file = FileModel::find($file_id);
                 
                 if ($file) {
-                    Storage::disk('public')->delete($file->path);
+                    Storage::disk('public')->delete("files/{$file->unique_name}");
                     $file->delete();
                 }
             }
@@ -142,11 +143,31 @@ class PostController extends Controller
                 $file = new FileModel();
                 $file->post_id = $post->id;
                 $file->user_id = $post->user_id;
-                $file->path = $path;
+                $file->unique_name = basename($path);
+                $file->orig_name = $new_file->getClientOriginalName();
                 $file->save();
             }
         }
 
         return to_route('post.view', ['id' => $request->id])->with('message', 'Post updated successfully!');
+    }
+
+    /**
+     * Deletes the post.
+     * @param \Illuminate\Http\Request $request
+     */
+    public function destroy(Request $request)
+    {
+        $post = Post::with(['files'])->find($request->post_id);
+
+        if ($post) {
+            foreach ($post->files as $file) {
+                Storage::disk('public')->delete("files/{$file->unique_name}");
+            }
+        }
+
+        $post->delete();
+
+        return to_route('dashboard')->with('message', 'Post deleted successfully!');
     }
 }
