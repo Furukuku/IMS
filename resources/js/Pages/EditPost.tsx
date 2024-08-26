@@ -67,15 +67,15 @@ const EditPost = ({ post }: { post: Post }) => {
 
   return (
     <Home>
-      <main className="flex py-5 px-14 lg:px-10">
+      <main className="flex py-5 px-2 sm:px-10">
       <Link 
-          href={route('dashboard')}
-          className="pe-10"
+          href={route('post.view', { id: post.id })}
+          className="pe-10 hidden lg:inline-block"
         >
           <IoMdArrowBack  className="text-2xl cursor-pointer" />
         </Link>
         <form 
-          className="bg-white border shadow p-10 flex-1"
+          className="bg-white rounded border shadow p-5 sm:p-10 flex-1"
           onSubmit={handlePostUpdate}
         >
           <InputField 
@@ -133,7 +133,7 @@ const EditPost = ({ post }: { post: Post }) => {
                   {oldFiles.map((file) => (
                     <li key={file.id}>
                       <div className={`flex justify-between items-center border rounded px-2 py-1 bg-zinc-100`}>
-                        <p className="text-sm">{file.unique_name}</p>
+                        <p className="text-sm truncate grow w-20">{file.orig_name}</p>
                         <IoIosClose 
                           className="cursor-pointer text-xl"
                           onClick={() => handleRemoveOldFile(file.id)}

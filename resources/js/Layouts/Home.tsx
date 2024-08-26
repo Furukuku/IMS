@@ -3,7 +3,7 @@ import NavBar from "@/Components/NavBar"
 import { ReactNode, useState } from "react"
 
 const Home = ({ children }: { children: ReactNode } ) => {
-  const [navBar, setNavBar] = useState<boolean>(true);
+  const [navBar, setNavBar] = useState<boolean>(false);
 
   return (
     <div className="flex">
@@ -11,7 +11,7 @@ const Home = ({ children }: { children: ReactNode } ) => {
         navBar={navBar}
         setNavBar={setNavBar}
       />
-      <div className="w-60 sm:w-0 lg:w-60 transition-all duration-300 ease-in-out" />
+      <div className="w-0 lg:w-60 transition-all duration-300 ease-in-out" />
       <section className="flex-1">
         <Header 
           navBar={navBar}

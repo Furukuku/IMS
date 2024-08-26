@@ -25,14 +25,16 @@ const ViewPost = ({ post }: { post: Post }) => {
   
   return (
     <Home>
-      <main className="flex py-5 px-14 lg:px-10">
-        <Link
-          href={route('dashboard')}
-          className="pe-10"
-        >
-          <IoMdArrowBack  className="text-2xl cursor-pointer" />
-        </Link>
-        <div className="bg-white border shadow p-10 flex-1 divide-y-[40px] divide-transparent">
+      <main className="flex flex-col lg:flex-row py-5 px-2 sm:px-10">
+        <div className="pe-10 hidden lg:inline-block">
+          <Link
+            href={route('dashboard')}
+            className=""
+          >
+            <IoMdArrowBack  className="text-2xl cursor-pointer" />
+          </Link>
+        </div>
+        <div className="bg-white border rounded shadow p-5 sm:p-10 flex-1 divide-y-[40px] divide-transparent">
           <section className="flex justify-between">
             <div>
               <p className="text-3xl font-semibold mb-1">{post.title}</p>
@@ -96,7 +98,7 @@ const ViewPost = ({ post }: { post: Post }) => {
                 <a 
                   href={route('file.show', { filename: file.unique_name })}
                   target="_blank"
-                  className="bg-zinc-100 border rounded-md shadow-sm inline-block p-2 text-sm hover:underline hover:bg-zinc-200"
+                  className="bg-zinc-100 border rounded-md shadow-sm p-2 w-20 truncate grow text-sm hover:underline hover:bg-zinc-200"
                 >
                   {file.orig_name}
                 </a>

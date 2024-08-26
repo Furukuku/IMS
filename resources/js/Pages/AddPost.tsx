@@ -47,15 +47,15 @@ const AddPost = () => {
 
   return (
     <Home>
-      <main className="flex py-5 px-14 lg:px-10">
+      <main className="flex py-5 px-2 sm:px-10">
         <Link 
           href={route('dashboard')}
-          className="pe-10"
+          className="pe-10 hidden lg:inline-block"
         >
           <IoMdArrowBack  className="text-2xl cursor-pointer" />
         </Link>
         <form 
-          className="bg-white border shadow p-10 flex-1"
+          className="bg-white border rounded shadow p-5 sm:p-10 flex-1"
           onSubmit={handlePostSubmit}
         >
           <InputField 

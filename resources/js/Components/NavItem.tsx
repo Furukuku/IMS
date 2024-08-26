@@ -8,7 +8,7 @@ const NavItem = ({ label, link, components, icon }: NavItems) => {
     <li>
       <Link 
         href={link}
-        className={`flex items-center gap-2 text-zinc-200 p-3 rounded-md ${components.includes(component) && 'bg-white bg-opacity-25'}`}
+        className={`flex items-center gap-2 text-zinc-200 p-3 rounded-md hover:bg-white hover:bg-opacity-20 ${components.includes(component) && 'bg-white bg-opacity-25'}`}
       >
         {icon}
         {label}
