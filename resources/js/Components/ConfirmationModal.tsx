@@ -9,9 +9,12 @@ interface ConfirmationModalProps {
     setShowModal: Dispatch<SetStateAction<boolean>>;
     routeName: string;
     method: 'get' | 'post' | 'put' | 'patch' | 'delete';
+    params?: {
+      [key: string]: unknown
+    }
 }
 
-const ConfirmationModal = ({ header, message, btnText, id, setShowModal, routeName, method }: ConfirmationModalProps) => {
+const ConfirmationModal = ({ header, message, btnText, id, setShowModal, routeName, method, params = {} }: ConfirmationModalProps) => {
   const [isInvalid, setIsInvalid] = useState<boolean>(false);
   const { get, post, put, patch, delete: deleteRouter } = useForm({
     id: id
@@ -19,15 +22,15 @@ const ConfirmationModal = ({ header, message, btnText, id, setShowModal, routeNa
 
   const handleConfirmClick = (): void => {
     if (method === 'get') {
-      get(route(routeName));
+      get(route(routeName, params));
     } else if (method === 'post') {
-      post(route(routeName));
+      post(route(routeName, params));
     } else if (method === 'put') {
-      put(route(routeName));
+      put(route(routeName, params));
     } else if (method === 'patch') {
-      patch(route(routeName));
+      patch(route(routeName, params));
     } else if (method === 'delete') {
-      deleteRouter(route(routeName));
+      deleteRouter(route(routeName, params));
     }
 
     setShowModal(false);

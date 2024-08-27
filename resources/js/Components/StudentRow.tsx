@@ -20,6 +20,7 @@ const StudentRow = ({
     setActionModal({
       id: student.id,
       fullName: student.first_name + ' ' + student.last_name,
+      status: student.status,
       isSelected: true,
       modalProps: actionBtnElement.current?.getBoundingClientRect()
     });
@@ -90,7 +91,7 @@ const StudentRow = ({
   // }, [buttonPosition]);
 
   return (
-    <tr className="odd:bg-white even:bg-zinc-100">
+    <tr className="odd:bg-zinc-100 even:bg-white">
       <td className="px-6 py-3 text-sm">{student.first_name} {student.last_name}</td>
       <td className="px-6 py-3 text-sm">{student.student_no}</td>
       <td className="px-6 py-3 text-sm">{student.company_name}</td>

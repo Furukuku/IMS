@@ -1,4 +1,5 @@
 import ConfirmationModal from "@/Components/ConfirmationModal";
+import StudentCategories from "@/Components/StudentCategories";
 import StudentRow from "@/Components/StudentRow";
 import Home from "@/Layouts/Home";
 import { PageProps, User } from "@/types";
@@ -8,6 +9,7 @@ import { useEffect, useRef, useState } from "react";
 export type StudentOptionProp = {
   id: number;
   fullName: string;
+  status: string;
   isSelected: boolean;
   modalProps?: DOMRect;
 } | null;
@@ -17,8 +19,11 @@ const Students = ({ students }: { students: User[] }) => {
   const [showActionModal, setShowActionModal] = useState<boolean>(false);
   const [showArchiveModal, setShowArchiveModal] = useState<boolean>(false);
   const [showApproveModal, setShowApproveModal] = useState<boolean>(false);
+  const [showUnarchiveModal, setShowUnarchiveModal] = useState<boolean>(false);
   const actionModalElement = useRef<HTMLUListElement | null>(null);
-  const { message } = usePage<PageProps>().props.flash;
+  const { url, props }: { url: string; props: PageProps } = usePage();
+  const urlQuery = url.slice(17);
+  const message = props.flash;
   const handleActionModalClose = (): void => {
     setStudentOptionProp(null);
     setShowActionModal(false);
@@ -28,6 +33,11 @@ const Students = ({ students }: { students: User[] }) => {
     setShowArchiveModal(true);
     setShowActionModal(false);
   };
+
+  const handleShowUnarchiveModal = (): void => {
+    setShowUnarchiveModal(true);
+    setShowActionModal(false);
+  }
 
   const handleShowApproveModal = (): void => {
     setShowApproveModal(true);
@@ -47,7 +57,17 @@ const Students = ({ students }: { students: User[] }) => {
       <main className="py-5 px-2 sm:px-10">
         <div className="flex bg-white border shadow p-4 rounded-md">
           <div className="bg-white overflow-x-auto w-40 grow">
-            <div className="p-6 inline-block w-full">
+          <div className="p-6 inline-block w-full">
+            <div className="flex items-end justify-between mb-3">
+              <StudentCategories />
+              <form>
+                <input 
+                  type="text"
+                  className="w-60 rounded px-2 py-1 border-1 border-zinc-400 placeholder:text-sm" 
+                  placeholder="Search..."
+                />
+              </form>
+            </div>
               <table className="divide-y w-full">
                 <thead className="whitespace-nowrap">
                   <tr>
@@ -59,7 +79,7 @@ const Students = ({ students }: { students: User[] }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {students.map(student => (
+                  {students.length > 0 ? (students.map(student => (
                     <StudentRow
                       key={student.id}
                       student={student}
@@ -67,7 +87,11 @@ const Students = ({ students }: { students: User[] }) => {
                       setActionModal={setStudentOptionProp}
                       showActionModal={setShowActionModal}
                     />
-                  ))}
+                  ))): (
+                    <tr>
+                      <td colSpan={6} className="text-xl text-zinc-500 font-medium text-center pt-5">No students</td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
@@ -77,14 +101,25 @@ const Students = ({ students }: { students: User[] }) => {
                 ref={actionModalElement} 
                 className={`absolute text-sm bg-white z-30 py-2 rounded shadow-md border animate-[show_80ms_ease-in-out]`}
               >
-                <li>
-                  <button 
-                    className="px-3 py-1 w-full text-start hover:bg-zinc-200"
-                    onClick={handleShowArchiveModal}
-                  >
-                    Archive
-                  </button>
-                </li>
+                {studentOptionProp?.status === 'Archive' ? (
+                  <li>
+                    <button 
+                      className="px-3 py-1 w-full text-start hover:bg-zinc-200"
+                      onClick={handleShowUnarchiveModal}
+                    >
+                      Unarchive
+                    </button>
+                  </li>
+                ) : (
+                  <li>
+                    <button 
+                      className="px-3 py-1 w-full text-start hover:bg-zinc-200"
+                      onClick={handleShowArchiveModal}
+                    >
+                      Archive
+                    </button>
+                  </li>
+                )}
                 <li>
                   <button 
                     className="px-3 py-1 w-full text-start hover:bg-zinc-200"
@@ -109,6 +144,19 @@ const Students = ({ students }: { students: User[] }) => {
               setShowModal={setShowArchiveModal}
               routeName="student.archive"
               method="patch"
+              params={urlQuery != '' ? { status: urlQuery } : {}}
+            />
+          )}
+          {showUnarchiveModal && (
+            <ConfirmationModal 
+              header={`Unarchive "${studentOptionProp?.fullName}"?`}
+              message="Are you sure you want to unarchive this student? This will set its account to active."
+              btnText="Unarchive"
+              id={studentOptionProp?.id}
+              setShowModal={setShowUnarchiveModal}
+              routeName="student.approve"
+              method="patch"
+              params={urlQuery != '' ? { status: urlQuery } : {}}
             />
           )}
           {showApproveModal && (
@@ -120,6 +168,7 @@ const Students = ({ students }: { students: User[] }) => {
               setShowModal={setShowApproveModal}
               routeName="student.approve"
               method="patch"
+              params={urlQuery != '' ? { status: urlQuery } : {}}
             />
           )}
           </div>
