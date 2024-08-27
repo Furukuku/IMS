@@ -7,6 +7,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ReplyController;
+use App\Http\Controllers\StudentController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -56,6 +57,12 @@ Route::middleware('auth')->group(function () {
     Route::prefix('comment')->controller(CommentController::class)->name('comments.')->group(function() {
         Route::post('/add', 'store')->name('add');
         Route::get('/show-more', 'showMore')->name('show-more');
+    });
+
+    Route::get('/students', [StudentController::class, 'index'])->name('students');
+    Route::prefix('student')->controller(StudentController::class)->name('student.')->group(function() {
+        Route::patch('/archive', 'archive')->name('archive');
+        Route::patch('/approve', 'approve')->name('approve');
     });
 
     Route::post('/logout', [LogoutController::class, 'logout']);

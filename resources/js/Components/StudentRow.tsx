@@ -1,0 +1,112 @@
+import { User } from "@/types";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { SlOptionsVertical } from "react-icons/sl";
+import { StudentOptionProp } from "@/Pages/Students";
+
+const StudentRow = ({ 
+  student, 
+  // actionModal, 
+  setActionModal,
+  showActionModal 
+}: { 
+  student: User; 
+  // actionModal: StudentOptionProp; 
+  setActionModal: Dispatch<SetStateAction<StudentOptionProp>>,
+  showActionModal: Dispatch<SetStateAction<boolean>> 
+}) => {
+  // const [buttonPosition, setButtonPosition] = useState<DOMRect | null>(null);
+  const actionBtnElement = useRef<HTMLButtonElement | null>(null);
+  const handleActionClick = (): void => {
+    setActionModal({
+      id: student.id,
+      fullName: student.first_name + ' ' + student.last_name,
+      isSelected: true,
+      modalProps: actionBtnElement.current?.getBoundingClientRect()
+    });
+    showActionModal(true);
+  };
+
+  // SOLUTION 1
+  // useEffect(() => {
+  //   const updatePosition = () => {
+  //      if (actionBtnElement.current) {
+  //       const rect = actionBtnElement.current.getBoundingClientRect();
+  //       setButtonPosition(rect);
+  //      }
+  //   };
+
+  //   const observer = new ResizeObserver(updatePosition);
+  //   if (actionBtnElement.current) {
+  //     observer.observe(actionBtnElement.current);
+  //   }
+
+  //   updatePosition();
+
+  //   window.addEventListener('resize', updatePosition);
+
+  //   return () => {
+  //     if (actionBtnElement.current) {
+  //       observer.unobserve(actionBtnElement.current);
+  //     }
+
+  //     window.removeEventListener('resize', updatePosition);
+  //   }
+
+  // }, [actionModal?.isSelected]);
+
+  // useEffect(() => {
+  //   if (actionModal?.isSelected && buttonPosition) {
+  //     setActionModal({
+  //       ...actionModal,
+  //       modalProps: buttonPosition
+  //     })
+  //   }
+
+  // }, [buttonPosition]);
+
+  // SOLUTION 2
+  // useEffect(() => {
+  //   const handleResize = () => {
+  //     if (actionBtnElement.current) {
+  //       const rect = actionBtnElement.current.getBoundingClientRect();
+  //       setButtonPosition(rect);
+  //     }
+  //   };
+
+  //   window.addEventListener('resize', handleResize);
+
+  //   return () => {
+  //     window.removeEventListener('resize', handleResize);
+  //   };
+  // }, []);
+
+  // useEffect(() => {
+  //   if (actionModal && buttonPosition) {
+  //     setActionModal({
+  //       ...actionModal,
+  //       modalProps: buttonPosition
+  //     });
+  //   }
+  // }, [buttonPosition]);
+
+  return (
+    <tr className="odd:bg-white even:bg-zinc-100">
+      <td className="px-6 py-3 text-sm">{student.first_name} {student.last_name}</td>
+      <td className="px-6 py-3 text-sm">{student.student_no}</td>
+      <td className="px-6 py-3 text-sm">{student.company_name}</td>
+      <td className="px-6 py-3 text-sm">{student.company_address}</td>
+      <td className="px-6 py-3 text-sm text-center">
+        <div className="inline-block">
+          <button 
+            ref={actionBtnElement}
+            onClick={handleActionClick}
+          >
+            <SlOptionsVertical />
+          </button>
+        </div>
+      </td>
+    </tr>
+  );
+};
+
+export default StudentRow;

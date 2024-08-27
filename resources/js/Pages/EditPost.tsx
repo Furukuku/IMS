@@ -68,7 +68,7 @@ const EditPost = ({ post }: { post: Post }) => {
   return (
     <Home>
       <main className="flex py-5 px-2 sm:px-10">
-      <Link 
+        <Link 
           href={route('post.view', { id: post.id })}
           className="pe-10 hidden lg:inline-block"
         >

@@ -7,7 +7,7 @@ import { SlOptionsVertical } from "react-icons/sl";
 import { FaFileDownload } from "react-icons/fa";
 import Comments from "@/Components/Comments";
 import { useState } from "react";
-import DeleteModal from "@/Components/DeleteModal";
+import ConfirmationModal from "@/Components/ConfirmationModal";
 
 
 const ViewPost = ({ post }: { post: Post }) => {
@@ -78,9 +78,14 @@ const ViewPost = ({ post }: { post: Post }) => {
                   </>
                 )}
                 {showDeleteModal && (
-                  <DeleteModal 
+                  <ConfirmationModal 
+                    header={`Delete "${post.title}" Post?`}
+                    message="Are you sure you want to delete this post? This will permanently delete the post!"
+                    btnText="Delete"
                     id={post.id}
                     setShowModal={setShowDeleteModal}
+                    routeName="post.destroy"
+                    method="delete"
                   />
                 )}
               </div>
