@@ -1,13 +1,11 @@
-import { Link, usePage } from "@inertiajs/react";
 import StudentCategoryItem from "./StudentCategoryItem";
 
-
-const StudentCategories = () => {
+const StudentCategories = ({ status }: { status: string }) => {
   const categoryLinks = [
     {
       name: 'All',
       url: '/students',
-      param: ''
+      param: 'All'
     },
     {
       name: 'Actives',
@@ -36,6 +34,7 @@ const StudentCategories = () => {
             name={link.name}
             url={link.url}
             param={link.param}
+            status= {status}
           />
         ))}
       </ul>

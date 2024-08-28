@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class StudentController extends Controller
 {
@@ -14,16 +15,67 @@ class StudentController extends Controller
      */
     public function index(Request $request)
     {
+        if (!is_null($request->input('status')) && !is_null($request->input('search'))) {
+            $students = User::where('is_admin', false)
+                ->where('status', $request->input('status'))
+                ->where(function($query) use ($request) {
+                    $query->whereLike('first_name', "%{$request->input('search')}%")
+                        ->orWhereLike('last_name', "%{$request->input('search')}%")
+                        ->orWhereLike('student_no', "%{$request->input('search')}%")
+                        ->orWhereLike('company_name', "%{$request->input('search')}%")
+                        ->orWhereLike('company_address', "%{$request->input('search')}%")
+                        ->orWhereLike(DB::raw("CONCAT(first_name, ' ', last_name)"), "%{$request->input('search')}%");
+                })
+                ->paginate(10);
+            $students->appends([
+                'status' => $request->input('status'),
+                'search' => $request->input('search')
+            ]);
+
+            return Inertia::render('Students', [
+                'students' => $students,
+                'status' => $request->input('status'),
+                'search' => $request->input('search')
+            ]);
+        }
+
         if (!is_null($request->input('status'))) {
             $students = User::where('is_admin', false)
                 ->where('status', $request->input('status'))
-                ->get();
+                ->paginate(10);
+            $students->appends(['status' => $request->input('status')]);
 
-            return Inertia::render('Students', ['students' => $students]);
-        };
+            return Inertia::render('Students', [
+                'students' => $students,
+                'status' => $request->input('status')
+            ]);
+        }
 
-        $students = User::where('is_admin', false)->get();
-        return Inertia::render('Students', ['students' => $students]);
+        if (!is_null($request->input('search'))) {
+            $students = User::where('is_admin', false)
+                ->where(function($query) use ($request) {
+                    $query->whereLike('first_name', "%{$request->input('search')}%")
+                        ->orWhereLike('last_name', "%{$request->input('search')}%")
+                        ->orWhereLike('student_no', "%{$request->input('search')}%")
+                        ->orWhereLike('company_name', "%{$request->input('search')}%")
+                        ->orWhereLike('company_address', "%{$request->input('search')}%")
+                        ->orWhereLike(DB::raw("CONCAT(first_name, ' ', last_name)"), "%{$request->input('search')}%");
+                })
+                ->paginate(10);
+            $students->appends(['search' => $request->input('search')]);
+
+            return Inertia::render('Students', [
+                'students' => $students,
+                'status' => 'All',
+                'search' => $request->input('search')
+            ]);
+        }
+
+        $students = User::where('is_admin', false)->paginate(10);
+        return Inertia::render('Students', [
+            'students' => $students,
+            'status' => 'All'
+        ]);
     }
 
     /**
