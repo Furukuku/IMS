@@ -8,6 +8,7 @@ use App\Http\Controllers\FileController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ReplyController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\MessageController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -64,6 +65,8 @@ Route::middleware('auth')->group(function () {
         Route::patch('/archive', 'archive')->name('archive');
         Route::patch('/approve', 'approve')->name('approve');
     });
+
+    Route::get('/messages', [MessageController::class, 'index'])->name('messages');
 
     Route::post('/logout', [LogoutController::class, 'logout']);
 });

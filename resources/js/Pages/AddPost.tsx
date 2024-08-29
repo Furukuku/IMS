@@ -3,7 +3,7 @@ import InputField from "@/Components/InputField";
 import { PostData } from "@/Interfaces/Post";
 import Home from "@/Layouts/Home";
 import { Link, useForm } from "@inertiajs/react";
-import { ChangeEvent, DragEvent, FormEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { IoMdArrowBack, IoIosClose  } from "react-icons/io";
 
 const AddPost = () => {
