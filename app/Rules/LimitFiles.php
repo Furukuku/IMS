@@ -8,11 +8,12 @@ use App\Models\Post;
 
 class LimitFiles implements ValidationRule
 {
-    private $post_id;
+    private $post_id, $removed_files;
 
-    public function __construct($post_id)
+    public function __construct($post_id, $removed_files)
     {
         $this->post_id = $post_id;
+        $this->removed_files = $removed_files;
     }
 
     /**
@@ -23,8 +24,9 @@ class LimitFiles implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         $post = Post::withCount('files')->find($this->post_id);
+        $currentFiles = $post->files_count - count($this->removed_files);
         
-        if (count($value) + $post->files_count > 5) {
+        if (count($value) + $currentFiles > 5) {
             $fail('The :attribute field must not have more than 5 items.');
         }
     }

@@ -1,7 +1,7 @@
 import DragNDrop from "@/Components/DragNDrop";
 import InputField from "@/Components/InputField";
 import { PostData } from "@/Interfaces/Post";
-import Home from "@/Layouts/Home";
+import HomeLayout from "@/Layouts/HomeLayout";
 import { File as FileData, Post } from "@/types";
 import { Link, useForm } from "@inertiajs/react";
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
@@ -66,7 +66,7 @@ const EditPost = ({ post }: { post: Post }) => {
   }, removedFiles);
 
   return (
-    <Home>
+    <HomeLayout>
       <main className="flex py-5 px-2 sm:px-10">
         <Link 
           href={route('post.view', { id: post.id })}
@@ -173,7 +173,7 @@ const EditPost = ({ post }: { post: Post }) => {
           </button>
         </form>
       </main>
-    </Home>
+    </HomeLayout>
   );
 };
 

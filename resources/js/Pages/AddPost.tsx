@@ -1,7 +1,7 @@
 import DragNDrop from "@/Components/DragNDrop";
 import InputField from "@/Components/InputField";
 import { PostData } from "@/Interfaces/Post";
-import Home from "@/Layouts/Home";
+import HomeLayout from "@/Layouts/HomeLayout";
 import { Link, useForm } from "@inertiajs/react";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { IoMdArrowBack, IoIosClose  } from "react-icons/io";
@@ -46,7 +46,7 @@ const AddPost = () => {
   }, [files]);
 
   return (
-    <Home>
+    <HomeLayout>
       <main className="flex py-5 px-2 sm:px-10">
         <Link 
           href={route('dashboard')}
@@ -129,7 +129,7 @@ const AddPost = () => {
           <button className="bg-zinc-950 text-white w-full py-2.5 rounded-md">Add Post</button>
         </form>
       </main>
-    </Home>
+    </HomeLayout>
   )
 }
 

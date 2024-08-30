@@ -1,5 +1,5 @@
 import { formatDate } from "@/helpers/date";
-import Home from "@/Layouts/Home";
+import HomeLayout from "@/Layouts/HomeLayout";
 import { PageProps, Post } from "@/types";
 import { Link, usePage } from "@inertiajs/react";
 
@@ -22,7 +22,7 @@ const Dashboard = ({ posts }: { posts: Post[] }) => {
   ));
 
   return (
-    <Home>
+    <HomeLayout>
       <main className="flex flex-col lg:flex-row py-5 px-2 sm:px-10">
         <div className="pe-10 pb-5 pt-2 px-12 lg:ps-0 lg:pt-5 sticky top-1 z-10">
           <Link
@@ -36,7 +36,7 @@ const Dashboard = ({ posts }: { posts: Post[] }) => {
           {postList.length > 0 ? postList : <p className="mb-5 text-xl text-center text-zinc-500">You have no post yet.</p>}
         </div>
       </main>
-    </Home>
+    </HomeLayout>
   );
 };
 

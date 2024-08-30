@@ -100,14 +100,14 @@ class PostController extends Controller
      * @param \Illuminate\Http\Request $request
      */
     public function update(Request $request)
-    {
+    {  
         $request->validate([
             'id' => ['required', 'integer'],
             'title' => ['required', 'max:100', 'string'],
             'description' => ['required', 'max:2000', 'string'],
             'is_uploadable' => ['required', 'boolean'],
             'removed_files' => ['array'],
-            'files' => ['array', new LimitFiles($request->id)],
+            'files' => ['array', new LimitFiles($request->id, $request->removed_files)],
             'files.*' => [File::types([
                 'pdf',
                 'docx',

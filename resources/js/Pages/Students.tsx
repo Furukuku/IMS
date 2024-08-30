@@ -3,7 +3,7 @@ import Pagination from "@/Components/Pagination";
 import StudentCategories from "@/Components/StudentCategories";
 import StudentRow from "@/Components/StudentRow";
 import StudentSearch from "@/Components/StudentSearch";
-import Home from "@/Layouts/Home";
+import HomeLayout from "@/Layouts/HomeLayout";
 import { PageProps, PaginatedUsers } from "@/types";
 import { usePage } from "@inertiajs/react";
 import { useEffect, useRef, useState } from "react";
@@ -54,7 +54,7 @@ const Students = ({ students, status, search }: { students: PaginatedUsers; stat
   }, [studentOptionProp]);
 
   return (
-    <Home>
+    <HomeLayout>
       <main className="py-5 px-2 sm:px-10">
         <div className="bg-white border shadow p-4 rounded-md">
           <div className="flex">
@@ -189,7 +189,7 @@ const Students = ({ students, status, search }: { students: PaginatedUsers; stat
           />
         </div>
       </main>
-    </Home>
+    </HomeLayout>
   );
 };
 

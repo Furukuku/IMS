@@ -2,7 +2,7 @@ import Header from "@/Components/Header"
 import NavBar from "@/Components/NavBar"
 import { ReactNode, useState } from "react"
 
-const Home = ({ children }: { children: ReactNode } ) => {
+const HomeLayout = ({ children }: { children: ReactNode } ) => {
   const [navBar, setNavBar] = useState<boolean>(false);
 
   return (
@@ -23,4 +23,4 @@ const Home = ({ children }: { children: ReactNode } ) => {
   )
 }
 
-export default Home
+export default HomeLayout

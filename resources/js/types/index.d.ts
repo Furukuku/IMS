@@ -82,6 +82,34 @@ export interface Reply {
     updated_at: Date | null;
 }
 
+export interface Conversation {
+    id: number;
+    name: string | null;
+    pivot?: ConversationUser;
+    conversation_user?: ConversationUser;
+    latest_message: Message | null;
+    messages?: Message[];
+    created_at: Date | null;
+    updated_at: Date | null;
+}
+
+export interface ConversationUser {
+    conversation_id: number;
+    user_id: number;
+    name: string | null;
+    created_at: Date;
+    updated_at: Date | null;
+}
+
+export interface Message {
+    id: number;
+    user_id: number;
+    conversation_id: number;
+    content: string;
+    created_at: Date;
+    updated_at: Date | null;
+}
+
 export type PageProps<T extends Record<string, unknown> = Record<string, unknown>> = T & {
     auth: {
         user: User;

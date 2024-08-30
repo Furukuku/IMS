@@ -1,5 +1,4 @@
 import { formatDate } from "@/helpers/date";
-import Home from "@/Layouts/Home";
 import { PageProps, Post } from "@/types";
 import { Link, usePage } from "@inertiajs/react";
 import { IoMdArrowBack } from "react-icons/io";
@@ -8,6 +7,7 @@ import { FaFileDownload } from "react-icons/fa";
 import Comments from "@/Components/Comments";
 import { useState } from "react";
 import ConfirmationModal from "@/Components/ConfirmationModal";
+import HomeLayout from "@/Layouts/HomeLayout";
 
 
 const ViewPost = ({ post }: { post: Post }) => {
@@ -24,7 +24,7 @@ const ViewPost = ({ post }: { post: Post }) => {
   };
   
   return (
-    <Home>
+    <HomeLayout>
       <main className="flex flex-col lg:flex-row py-5 px-2 sm:px-10">
         <div className="pe-10 hidden lg:inline-block">
           <Link
@@ -123,7 +123,7 @@ const ViewPost = ({ post }: { post: Post }) => {
           />
         </div>
       </main>
-    </Home>
+    </HomeLayout>
   );
 };
 

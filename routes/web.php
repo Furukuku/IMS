@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\ReplyController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\MessageController;
@@ -38,16 +39,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/', [PostController::class, 'index'])->name('dashboard');
     Route::prefix('post')->controller(PostController::class)->name('post.')->group(function() {
         Route::inertia('/add', 'AddPost')->name('add');
-        Route::post('/add', [PostController::class, 'store']);
-        Route::get('/{id}', [PostController::class, 'show'])->name('view');
-        Route::get('/edit/{id}', [PostController::class, 'edit'])->name('edit');
-        Route::put('/update', [PostController::class, 'update'])->name('update');
-        Route::delete('/destroy', [PostController::class, 'destroy'])->name('destroy');
+        Route::post('/add', 'store');
+        Route::get('/{id}', 'show')->name('view');
+        Route::get('/edit/{id}', 'edit')->name('edit');
+        Route::put('/update', 'update')->name('update');
+        Route::delete('/destroy', 'destroy')->name('destroy');
     });
 
     Route::prefix('file')->controller(FileController::class)->name('file.')->group(function() {
-        Route::get('/show/{filename}', [FileController::class, 'show'])->name('show');
-        Route::get('/download/{filename}', [FileController::class, 'download'])->name('download');
+        Route::get('/show/{filename}', 'show')->name('show');
+        Route::get('/download/{filename}', 'download')->name('download');
     });
 
     Route::prefix('reply')->controller(ReplyController::class)->name('replies.')->group(function() {
@@ -67,6 +68,9 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::get('/messages', [MessageController::class, 'index'])->name('messages');
+    Route::prefix('messages')->controller(ConversationController::class)->name('conversation.')->group(function() {
+        Route::get('/{id}', 'show')->name('view');
+    });
 
     Route::post('/logout', [LogoutController::class, 'logout']);
 });
