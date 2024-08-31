@@ -23,10 +23,11 @@ const StudentCategories = ({ status }: { status: string }) => {
       param: 'Approval'
     },
   ];
+  const checkIfArchived = (stat: string): string => stat == 'Archive' ? 'Archived' : stat;
 
   return (
     <section>
-      <p className="text-xl font-medium mb-3">All Students</p>
+      <p className="text-xl font-medium mb-3">{checkIfArchived(status)} Students</p>
       <ul className="flex gap-3">
         {categoryLinks.map(link => (
           <StudentCategoryItem

@@ -5,7 +5,6 @@ import { IoIosSend, IoMdArrowBack } from "react-icons/io";
 import { ReactNode, useState } from "react";
 import { Conversation } from "@/types";
 
-
 const MessagesLayout = ({ 
   conversations, 
   conversation, 
@@ -34,7 +33,7 @@ const MessagesLayout = ({
           </form>
           <Conversations 
             conversations={conversations}
-            conversation={conversation}
+            activeConvo={conversation}
           />
         </nav>
         {sampleConvoTrigger && (

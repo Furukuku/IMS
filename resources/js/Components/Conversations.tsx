@@ -3,10 +3,10 @@ import { Link } from "@inertiajs/react";
 import ConversationCard from "./ConversationCard";
 
 
-const Conversations = ({ conversations, conversation }: { conversations: Conversation[]; conversation?: Conversation }) => {
+const Conversations = ({ conversations, activeConvo }: { conversations: Conversation[]; activeConvo?: Conversation }) => {
 
   return (
-    <ul className="divide-y-4 divide-transparent overflow-y-auto">
+    <ul className="w-full divide-y-4 divide-transparent overflow-y-auto">
       {/* <li>
         <Link 
           href=""
@@ -49,7 +49,7 @@ const Conversations = ({ conversations, conversation }: { conversations: Convers
         <ConversationCard 
           key={conversation.id}
           conversationId={conversation.id}
-          activeConversationId={conversation.id}
+          activeConversationId={activeConvo?.id}
           name={conversation.name || conversation.pivot?.name}
           latestMessage={conversation.latest_message}
         />

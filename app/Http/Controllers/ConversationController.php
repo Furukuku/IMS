@@ -32,7 +32,7 @@ class ConversationController extends Controller
 
         // $user = User::find(auth()->id());
 
-        // $user2 = User::find(3);
+        // $user2 = User::find(4);
 
         // $conversation->users()->attach([
         //     $user->id => ['name' => "{$user2->first_name} {$user2->last_name}"], 
@@ -46,7 +46,7 @@ class ConversationController extends Controller
         // $message->save();
 
         // $message = new Message();
-        // $message->user_id = 3;
+        // $message->user_id = 4;
         // $message->conversation_id = $conversation->id;
         // $message->content = 'Velit a id veritatis consectetur quibusdam quas sunt autem veniam qui maiores, excepturi repellendus totam tempore molestiae facilis sit corporis rerum eius expedita dicta assumenda! Vel nam neque perspiciatis! Enim quasi tenetur possimus rem sint molestias eum dolores vitae at aliquid dicta neque distinctio, nostrum eligendi perspiciatis veniam cumque mollitia quaerat dolor animi, voluptates nam corrupti non. Porro, eos!';
         // $message->save();

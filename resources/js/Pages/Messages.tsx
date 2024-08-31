@@ -1,29 +1,62 @@
 import Conversations from "@/Components/Conversations";
-import { formatDate } from "@/helpers/date";
+import SendMessageForm from "@/Components/SendMessageForm";
+import { autoFormatDateV2 } from "@/helpers/date";
 import HomeLayout from "@/Layouts/HomeLayout";
 import MessagesLayout from "@/Layouts/MessagesLayout";
-import { Conversation, PageProps } from "@/types";
+import { Conversation, Message, PageProps } from "@/types";
 import { Link, usePage } from "@inertiajs/react";
-import { Fragment, useState } from "react";
-import { IoIosSend, IoMdArrowBack } from "react-icons/io";
+import { Fragment, useEffect, useState } from "react";
+import { IoMdArrowBack } from "react-icons/io";
+import { socket } from "@/socket";
 
 const Messages = ({ conversations, conversation }: { conversations: Conversation[]; conversation?: Conversation }) => {
+  const [isConnected, setIsConnected] = useState<boolean>(socket.connected);
+  const [newMessages, setNewMessages] = useState<Message[]>([]);
   const { user } = usePage<PageProps>().props.auth;
-  /*
-    CONTINUE HERE!!!
-    TODO: Make this responsive
-  */
+
+  useEffect(() => {
+    const onConnect = () => {
+      socket.emit('setRoom', { conversationId: conversation?.id });
+      setIsConnected(true);
+    };
+
+    const onDisconnect = () => {
+      setIsConnected(false);
+    };
+
+    const onReceivedMessage = (data: Message) => {
+      newMessages.push(data);
+      setNewMessages([...newMessages]);
+    };
+
+    if (conversation) {
+      socket.connect();
+    }
+    
+    socket.on('connect', onConnect);
+    socket.on('receivedMessage', onReceivedMessage);
+    socket.on('disconnect', onDisconnect);
+
+    return () => {
+      socket.off('connect', onConnect);
+      socket.off('receivedMessage', onReceivedMessage);
+      socket.off('disconnect', onDisconnect);
+      socket.disconnect();
+    }
+  }, []);
+  
   return (
     <MessagesLayout 
       conversations={conversations}
       conversation={conversation}
     >
-      {conversation && (
+      {isConnected && conversation && (
         <div className="flex-1 hidden sm:block">
           <header className="flex gap-4 items-center border-b bg-white py-1.5 px-3">
             <Link 
               href=""
               className="text-xl block sm:hidden"
+              onClick={() => socket.disconnect()}
             >
               <IoMdArrowBack />
             </Link> 
@@ -35,15 +68,15 @@ const Messages = ({ conversations, conversation }: { conversations: Conversation
             <p className="flex-1 w-20 grow font-semibold truncate">{conversation.name || conversation.conversation_user?.name}</p>
           </header>
           <div className="bg-white h-[calc(100dvh-(48.8px+49.6px))] relative">
-            <main className="shadow-inner divide-y-[50px] divide-transparent h-[calc(100%-76.8px)] overflow-y-auto p-4">
+            <main className="shadow-inner divide-y-[15px] divide-transparent h-[calc(100%-76.8px)] overflow-y-auto p-4">
               {conversation.messages?.map(message => (
                 <Fragment key={message.id}>
                   {message.user_id == user.id ? (
                     <article className="flex justify-end">
-                      <div className="flex gap-2 basis-9/12">
-                        <div className="divide-y-4 divide-transparent">
-                          <p className="bg-zinc-900 text-white px-5 py-3 rounded-xl">{message.content}</p>
-                          <p className="text-end text-xs font-medium text-zinc-600 px-2">{formatDate(message.created_at)}</p>
+                      <div className="max-w-[75%]">
+                        <div className="divide-y-4 divide-transparent text-end">
+                          <p className="inline-block bg-zinc-900 text-start text-white px-5 py-3 rounded-xl">{message.content}</p>
+                          <p className="text-end text-xs font-medium text-zinc-600 px-2">{autoFormatDateV2(message.created_at)}</p>
                         </div>
                       </div>
                     </article>
@@ -56,8 +89,36 @@ const Messages = ({ conversations, conversation }: { conversations: Conversation
                           className="size-6 rounded-full"
                         />
                         <div className="divide-y-4 divide-transparent">
-                          <p className="bg-zinc-200 px-5 py-3 rounded-xl">{message.content}</p>
-                          <p className="text-xs font-medium text-zinc-600 px-2">{formatDate(message.created_at)}</p>
+                          <p className="inline-block bg-zinc-200 px-5 py-3 rounded-xl">{message.content}</p>
+                          <p className="text-xs font-medium text-zinc-600 px-2">{autoFormatDateV2(message.created_at)}</p>
+                        </div>
+                      </div>
+                    </article>
+                  )}
+                </Fragment>
+              ))}
+              {newMessages.map(message => (
+                <Fragment key={message.content}>
+                  {message.user_id == user.id ? (
+                    <article className="flex justify-end">
+                      <div className="max-w-[75%]">
+                        <div className="divide-y-4 divide-transparent text-end">
+                          <p className="inline-block bg-zinc-900 text-start text-white px-5 py-3 rounded-xl">{message.content}</p>
+                          <p className="text-end text-xs font-medium text-zinc-600 px-2">{autoFormatDateV2(message.created_at)}</p>
+                        </div>
+                      </div>
+                    </article>
+                  ) : (
+                    <article className="flex justify-start">
+                      <div className="flex gap-2 basis-9/12">
+                        <img 
+                          src="http://placehold.co/200x200" 
+                          alt="profile picture" 
+                          className="size-6 rounded-full"
+                        />
+                        <div className="divide-y-4 divide-transparent">
+                          <p className="inline-block bg-zinc-200 px-5 py-3 rounded-xl">{message.content}</p>
+                          <p className="text-xs font-medium text-zinc-600 px-2">{autoFormatDateV2(message.created_at)}</p>
                         </div>
                       </div>
                     </article>
@@ -73,15 +134,11 @@ const Messages = ({ conversations, conversation }: { conversations: Conversation
                 </div>
               </article> */}
             </main>
-            <form className="flex gap-3 items-center justify-end bg-white absolute inset-x-0 shadow bottom-0 border-t py-4 px-10">
-              <textarea
-                placeholder="Write something..."
-                className="rounded-md resize-none h-11 px-2 py-1 text-sm border-zinc-300 transition-all w-96 focus:flex-1"
-              />
-              <button className="bg-zinc-950 text-white px-3 py-2.5 text-2xl rounded-md">
-                <IoIosSend />
-              </button>
-            </form>
+            <SendMessageForm 
+              conversationId={conversation.id} 
+              socket={socket}
+              userId={user.id}
+            />
           </div>
         </div>
       )}

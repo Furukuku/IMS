@@ -42,3 +42,12 @@ export const autoFormatDate = (date: Date): string => {
 
   return differenceInDays >= 1 ? formatToDateOnly(date) : formatToTimeOnly(date);
 };
+
+export const autoFormatDateV2 = (date: Date): string => {
+  const currentDate = new Date();
+  const messageDate = new Date(date);
+  const differenceInMs: number = currentDate.getTime() - messageDate.getTime();
+  const differenceInDays = differenceInMs / (1000 * 60 * 60 * 24);
+
+  return differenceInDays >= 1 ? formatDate(date) : formatToTimeOnly(date);
+};

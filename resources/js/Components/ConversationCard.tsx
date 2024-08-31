@@ -4,14 +4,12 @@ import { Link } from "@inertiajs/react";
 
 interface ConversationCardProps {
   conversationId: number;
-  activeConversationId: number;
+  activeConversationId?: number;
   name?: string | null;
   latestMessage: Message | null;
 }
 
 const ConversationCard = ({ conversationId, activeConversationId, name, latestMessage }: ConversationCardProps) => {
-  
-
   return (
     <li>
       <Link 
@@ -24,12 +22,12 @@ const ConversationCard = ({ conversationId, activeConversationId, name, latestMe
           alt="profile picture" 
           className="size-7 rounded-full"
         />
-        <div className="grid divide-y-2 divide-transparent">
+        <div className="flex-1 grid divide-y-2 divide-transparent">
           <section className="flex gap-4 justify-between items-center">
             <p className="text-sm font-semibold w-10 grow truncate">{name || 'User'}</p>
             <p className="text-[10px] font-semibold truncate">{latestMessage ? autoFormatDate(latestMessage.created_at) : 'unknown'}</p>
           </section>
-          <p className="w-full text-xs font-semibold truncate">{latestMessage?.content}</p>
+          <p className="text-xs font-semibold truncate">{latestMessage?.content}</p>
         </div>
       </Link>
     </li>
