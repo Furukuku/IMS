@@ -90,7 +90,7 @@ export interface Conversation {
     latest_message: Message | null;
     messages?: Message[];
     created_at: Date | null;
-    updated_at: Date | null;
+    updated_at: Date;
 }
 
 export interface ConversationUser {

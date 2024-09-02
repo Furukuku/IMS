@@ -13,9 +13,11 @@ class ConversationController extends Controller
     public function show($id)
     {
         $conversation = Conversation::with([
-            'messages' => fn($query) => $query->with('user')->oldest(),
+            'messages' => fn($query) => $query->with('user')->latest()->take(10),
             'conversationUser'
         ])->find($id);
+
+        $conversation->setRelation('messages', $conversation->messages->sortBy('created_at')->values());
 
         $conversations = User::find(auth()->id())->conversations()->latest('updated_at')->with('latestMessage')->get();
         

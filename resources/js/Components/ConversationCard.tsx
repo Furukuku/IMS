@@ -1,6 +1,8 @@
 import { autoFormatDate } from "@/helpers/date";
 import { Message } from "@/types";
 import { Link } from "@inertiajs/react";
+import { socket } from "@/socket";
+import { useEffect, useState } from "react";
 
 interface ConversationCardProps {
   conversationId: number;
@@ -9,12 +11,16 @@ interface ConversationCardProps {
   latestMessage: Message | null;
 }
 
-const ConversationCard = ({ conversationId, activeConversationId, name, latestMessage }: ConversationCardProps) => {
+const ConversationCard = ({ 
+  conversationId, 
+  activeConversationId, 
+  name, 
+  latestMessage
+}: ConversationCardProps) => {
   return (
     <li>
       <Link 
         href={route('conversation.view', { id: conversationId })}
-        only={['conversation']}
         className={`flex gap-3 items-center py-2 px-4 rounded-lg ${conversationId == activeConversationId && 'bg-zinc-100'} hover:bg-zinc-200`}
       >
         <img 
