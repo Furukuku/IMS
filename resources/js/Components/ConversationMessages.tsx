@@ -3,33 +3,90 @@ import SendMessageForm from "./SendMessageForm";
 import { autoFormatDateV2 } from "@/helpers/date";
 import { Conversation, Message, PageProps } from "@/types";
 import { usePage } from "@inertiajs/react";
-import { useEffect, useRef } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from "react";
 import { socket } from "@/socket";
 
 const ConversationMessages = ({ 
   conversation, 
-  newMessages
+  newMessage,
+  setNewMessage
 }: { 
   conversation: Conversation; 
-  newMessages: Message[];
+  newMessage: Message | null;
+  setNewMessage: Dispatch<SetStateAction<Message | null>>;
 }) => {
+  const [latestMessages, setLatestMessages] = useState<Message[]>(conversation.messages || []);
+  const [hasMore, setHasMore] = useState<boolean>(true);
   const messagesContainer = useRef<HTMLElement | null>(null);
+  const topElement = useRef<HTMLDivElement | null>(null);
   const { user } = usePage<PageProps>().props.auth;
+
+  const messagesLength = useMemo(() => latestMessages.length, [latestMessages]);
+
+  const getMoreMessages = async () => {
+    try {
+      const response: Response = await fetch(route('messages.show-more', { 
+        conversation_id: conversation.id,
+        limit: 10,
+        skip: messagesLength
+      }));
+      const data = await response.json();
+
+      if (data.length < 1) {
+        setHasMore(false);
+      } else {
+        setLatestMessages(prev => [...data, ...prev]);
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      if (messagesContainer.current) {
+          messagesContainer.current.scrollTop = messagesContainer.current.getBoundingClientRect().height / 2;
+      }
+    }
+  };
+
+  const onIntersection = (entries: IntersectionObserverEntry[]) => {
+    const firstEntry = entries[0];
+    if (firstEntry.isIntersecting && hasMore) {
+      getMoreMessages();
+    }
+  };
 
   useEffect(() => {
     if (messagesContainer.current) {
       messagesContainer.current.scrollTop = messagesContainer.current.scrollHeight;
     }
+    
+    if (newMessage) {
+      setLatestMessages(prev => [...prev, newMessage]);
+      setNewMessage(null);
+    }
 
-  }, [newMessages]);
+  }, [newMessage]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver((onIntersection), { root: messagesContainer.current, rootMargin: '0px'});
+
+    if (observer && topElement.current) {
+      observer.observe(topElement.current);
+    }
+
+    return () => {
+      if (observer) {
+        observer.disconnect();
+      }
+    };
+  }, [latestMessages]);
 
   return (
     <div className="bg-white h-[calc(100dvh-(48.8px+49.6px))] relative">
       <main 
         ref={messagesContainer}
-        className="shadow-inner divide-y-[15px] divide-transparent h-[calc(100%-76.8px)] overflow-y-auto p-4 scroll-smooth"
+        className="shadow-inner divide-y-[15px] divide-transparent h-[calc(100%-76.8px)] overflow-y-auto p-4"
       >
-        {conversation.messages?.map(message => (
+        {hasMore && <p ref={topElement} className="text-xs text-center" >Loading...</p>}
+        {latestMessages.map(message => (
           <Fragment key={message.id}>
             {message.user_id == user.id ? (
               <article className="flex justify-end">
@@ -57,7 +114,7 @@ const ConversationMessages = ({
             )}
           </Fragment>
         ))}
-        {newMessages.map(message => (
+        {/* {newMessages.map(message => (
           <Fragment key={message.content}>
             {message.user_id == user.id ? (
               <article className="flex justify-end">
@@ -84,7 +141,7 @@ const ConversationMessages = ({
               </article>
             )}
           </Fragment>
-        ))}
+        ))} */}
         {/* <article className="flex justify-end">
           <div className="flex gap-2 basis-9/12">
             <div className="divide-y-4 divide-transparent">

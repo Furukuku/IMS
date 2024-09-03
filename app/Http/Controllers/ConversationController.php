@@ -10,6 +10,12 @@ use Inertia\Inertia;
 
 class ConversationController extends Controller
 {
+    public function index()
+    {
+        $conversations = User::find(auth()->id())->conversations()->latest('updated_at')->with('latestMessage')->get();
+        return Inertia::render('Messages', ['conversations' => $conversations]);
+    }
+
     public function show($id)
     {
         $conversation = Conversation::with([
@@ -27,8 +33,8 @@ class ConversationController extends Controller
         ]);
     }
 
-    public function index(Request $request)
-    {
+    // public function index(Request $request)
+    // {
         // $conversation = new Conversation();
         // $conversation->save();
 
@@ -54,5 +60,5 @@ class ConversationController extends Controller
         // $message->save();
 
         // dd($conversation);
-    }
+    // }
 }

@@ -17,15 +17,18 @@ const SendMessageForm = ({ conversationId, socket, userId }: { conversationId: n
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
-    setIsProcessing(true);
     e.preventDefault();
-    socket.emit('sendMessage', messageData, () => {
-      setMessageData({
-        ...messageData,
-        content: ''
+
+    if (messageData.content.trim().length > 0) {
+      setIsProcessing(true);
+      socket.emit('sendMessage', messageData, () => {
+        setMessageData({
+          ...messageData,
+          content: ''
+        });
+        setIsProcessing(false);
       });
-      setIsProcessing(false);
-    });
+    }
   };
 
   return (

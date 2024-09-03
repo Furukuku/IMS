@@ -67,8 +67,13 @@ Route::middleware('auth')->group(function () {
         Route::patch('/approve', 'approve')->name('approve');
     });
 
-    Route::get('/messages', [MessageController::class, 'index'])->name('messages');
-    Route::prefix('messages')->controller(ConversationController::class)->name('conversation.')->group(function() {
+    
+    Route::prefix('/messages')->controller(MessageController::class)->name('messages.')->group(function() {
+        Route::get('/show-more', 'showMore')->name('show-more');
+    });
+
+    Route::get('/conversations', [ConversationController::class, 'index'])->name('conversations');
+    Route::prefix('conversation')->controller(ConversationController::class)->name('conversation.')->group(function() {
         Route::get('/{id}', 'show')->name('view');
     });
 

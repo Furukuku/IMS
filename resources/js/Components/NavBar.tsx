@@ -27,7 +27,7 @@ const NavBar = ({ navBar, setNavBar }: NavBarProps) => {
     },
     {
       label: 'Messages',
-      link: '/messages',
+      link: '/conversations',
       components: ['Messages'],
       icon: <AiFillMessage />
     },

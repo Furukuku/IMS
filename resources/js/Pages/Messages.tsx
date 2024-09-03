@@ -12,7 +12,7 @@ import ConversationMessages from "@/Components/ConversationMessages";
 
 const Messages = ({ conversations, conversation }: { conversations: Conversation[]; conversation?: Conversation }) => {
   const [isConnected, setIsConnected] = useState<boolean>(socket.connected);
-  const [newMessages, setNewMessages] = useState<Message[]>([]);
+  const [newMessage, setNewMessage] = useState<Message | null>(null);
 
   useEffect(() => {
     socket.connect();
@@ -22,8 +22,7 @@ const Messages = ({ conversations, conversation }: { conversations: Conversation
     };
 
     const onReceivedMessage = (data: Message) => {
-      newMessages.push(data);
-      setNewMessages([...newMessages]);
+      setNewMessage(data);
     };
 
     if (conversation) {
@@ -50,7 +49,7 @@ const Messages = ({ conversations, conversation }: { conversations: Conversation
         <div className="flex-1 hidden sm:block">
           <header className="flex gap-4 items-center border-b bg-white py-1.5 px-3">
             <Link 
-              href={route('messages')}
+              href={route('conversations')}
               className="text-xl block sm:hidden"
               onClick={() => socket.disconnect()}
             >
@@ -65,7 +64,8 @@ const Messages = ({ conversations, conversation }: { conversations: Conversation
           </header>
           <ConversationMessages
             conversation={conversation}
-            newMessages={newMessages}
+            newMessage={newMessage}
+            setNewMessage={setNewMessage}
           />
         </div>
       )}

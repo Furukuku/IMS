@@ -2,15 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Message;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class MessageController extends Controller
 {
-    public function index()
+    public function showMore(Request $request) 
     {
-        $conversations = User::find(auth()->id())->conversations()->latest('updated_at')->with('latestMessage')->get();
-        return Inertia::render('Messages', ['conversations' => $conversations]);
+        $messages = Message::where('conversation_id', $request->input('conversation_id'))
+            ->latest()
+            ->skip($request->input('skip'))
+            ->take($request->input('limit'))
+            ->get();
+
+        return $messages->reverse()->values();
     }
 }
