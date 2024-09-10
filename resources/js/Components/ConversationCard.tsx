@@ -1,8 +1,6 @@
 import { autoFormatDate } from "@/helpers/date";
-import { Message } from "@/types";
-import { Link } from "@inertiajs/react";
-import { socket } from "@/socket";
-import { useEffect, useState } from "react";
+import { Message, PageProps } from "@/types";
+import { Link, usePage } from "@inertiajs/react";
 
 interface ConversationCardProps {
   conversationId: number;
@@ -17,6 +15,8 @@ const ConversationCard = ({
   name, 
   latestMessage
 }: ConversationCardProps) => {
+  const { user } = usePage<PageProps>().props.auth;
+
   return (
     <li>
       <Link 
@@ -33,7 +33,7 @@ const ConversationCard = ({
             <p className="text-sm font-semibold w-10 grow truncate">{name || 'User'}</p>
             <p className="text-[10px] font-semibold truncate">{latestMessage ? autoFormatDate(latestMessage.created_at) : 'unknown'}</p>
           </section>
-          <p className="text-xs font-semibold truncate">{latestMessage?.content}</p>
+          <p className="text-xs font-semibold truncate">{user.id == latestMessage?.user_id  && 'You: '}{latestMessage?.content}</p>
         </div>
       </Link>
     </li>
