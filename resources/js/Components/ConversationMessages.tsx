@@ -31,12 +31,12 @@ const ConversationMessages = ({
         skip: messagesLength
       }));
       const data = await response.json();
-
-      if (data.length < 1) {
+      
+      if (data.length < 10) {
         setHasMore(false);
-      } else {
-        setLatestMessages(prev => [...data, ...prev]);
       }
+
+      setLatestMessages(prev => [...data, ...prev]);
     } catch (err) {
       console.log(err);
     } finally {

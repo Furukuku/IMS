@@ -46,12 +46,11 @@ const Messages = ({ conversations, conversation }: { conversations: Conversation
       conversation={conversation}
     >
       {isConnected && conversation && (
-        <div className="flex-1 hidden sm:block">
+        <div className={`${conversation ? 'flex-1' : 'hidden sm:block'}`}>
           <header className="flex gap-4 items-center border-b bg-white py-1.5 px-3">
             <Link 
               href={route('conversations')}
               className="text-xl block sm:hidden"
-              onClick={() => socket.disconnect()}
             >
               <IoMdArrowBack />
             </Link> 

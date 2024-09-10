@@ -23,7 +23,7 @@ const MessagesLayout = ({
   return (
     <HomeLayout>
       <main className="flex h-[calc(100dvh-49.6px)]">
-        <nav className="flex flex-col items-center border h-full bg-white py-7 px-5 w-full sm:w-72">
+        <nav className={`${conversation ? 'hidden sm:flex sm:flex-col sm:items-center' : 'flex flex-col items-center'} border h-full bg-white py-7 px-5 w-full sm:w-72`}>
           <form className="mb-10 w-full px-4">
             <input
               type="text"
