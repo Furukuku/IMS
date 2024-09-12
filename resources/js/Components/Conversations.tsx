@@ -1,10 +1,12 @@
-import { Conversation, Message } from "@/types";
+import { Conversation, Message, PageProps } from "@/types";
 import ConversationCard from "./ConversationCard";
 import { socket } from "@/socket";
 import { useEffect, useState } from "react";
+import { usePage } from "@inertiajs/react";
 
 const Conversations = ({ conversations, activeConvo }: { conversations: Conversation[]; activeConvo?: Conversation }) => {
   const [newConversations, setNewConversations] = useState<Conversation[]>(conversations);
+  const { user } = usePage<PageProps>().props.auth;
 
   useEffect(() => {
     const onReceivedMessage = (data: Message) => {
@@ -26,10 +28,21 @@ const Conversations = ({ conversations, activeConvo }: { conversations: Conversa
       });
     }
 
+    const onNewConversation = (data: Conversation) => {
+      if (data.pivot?.user_id == user.id) {
+        setNewConversations([
+          data,
+          ...newConversations
+        ]);
+      }
+    };
+    
     socket.on('updateNewMessage', onReceivedMessage);
+    socket.on('newConversation', onNewConversation);
 
     return () => {
-      socket.off('updateNewMessage', onReceivedMessage)
+      socket.off('updateNewMessage', onReceivedMessage);
+      socket.on('newConversation', onNewConversation);
     };
   }, []);
 
@@ -78,7 +91,7 @@ const Conversations = ({ conversations, activeConvo }: { conversations: Conversa
           key={conversation.id}
           conversationId={conversation.id}
           activeConversationId={activeConvo?.id}
-          name={conversation.name || conversation.pivot?.name}
+          name={conversation.name || conversation.pivot?.client_name}
           latestMessage={conversation.latest_message}
         />
       ))}

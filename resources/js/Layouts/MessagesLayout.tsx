@@ -1,46 +1,59 @@
 import Conversations from "@/Components/Conversations";
 import HomeLayout from "./HomeLayout";
+import { ReactNode, useEffect, useState } from "react";
+import { Conversation, User } from "@/types";
+import ConversationSearch from "@/Components/ConversationSearch";
 import { Link } from "@inertiajs/react";
-import { IoIosSend, IoMdArrowBack } from "react-icons/io";
-import { ReactNode, useState } from "react";
-import { Conversation } from "@/types";
 
 const MessagesLayout = ({ 
   conversations, 
   conversation, 
+  client,
   children 
 }: { 
   conversations: Conversation[]; 
   conversation?: Conversation; 
+  client?: User;
   children?: ReactNode 
 }) => {
-  const [isConvoActive, setIsConvoActive] = useState<boolean>(false); // sample
-  const [sampleConvoTrigger, setSampleConvoTrigger] = useState(true); // sample
-  // console.log(conversations);
-  /*
-    TODO: Make this responsive
-  */
+  const [searchedUsers, setSearchUsers] = useState<User[] | null>(null);
+
   return (
     <HomeLayout>
       <main className="flex h-[calc(100dvh-49.6px)]">
-        <nav className={`${conversation ? 'hidden sm:flex sm:flex-col sm:items-center' : 'flex flex-col items-center'} border h-full bg-white py-7 px-5 w-full sm:w-72`}>
-          <form className="mb-10 w-full px-4">
-            <input
-              type="text"
-              className="text-sm px-2 py-2 w-full rounded border border-zinc-300"
-              placeholder="Search..."
-            />
-          </form>
-          <Conversations 
-            conversations={conversations}
-            activeConvo={conversation}
+        <nav className={`${conversation || client ? 'hidden sm:flex sm:flex-col sm:items-center' : 'flex flex-col items-center'} border h-full bg-white py-7 px-5 w-full sm:w-72`}>
+          <ConversationSearch 
+            setSearchUsers={setSearchUsers}
           />
+          {searchedUsers ? (
+            <ul className="w-full divide-y-4 divide-transparent overflow-y-auto">
+                {searchedUsers.map(convo => (
+                  <li key={convo.id}>
+                    <Link 
+                      href={route('conversation.new-message', { user: convo.id })}
+                      as="button"
+                      className={`w-full flex gap-3 items-center py-2 px-4 rounded-lg hover:bg-zinc-200`}
+                    >
+                      <img 
+                        src="https://placehold.co/50X50" 
+                        alt="profile picture" 
+                        className="size-7 rounded-full"
+                      />
+                      <div className="flex-1 grid divide-y-2 divide-transparent">
+                        <p className="text-start text-sm font-semibold truncate">{convo.first_name} {convo.last_name}</p>
+                      </div>
+                    </Link>
+                  </li>
+                ))}
+            </ul>
+          ) : (
+            <Conversations 
+              conversations={conversations}
+              activeConvo={conversation}
+            />
+          )}
         </nav>
-        {sampleConvoTrigger && (
-          <>
-            {children}
-          </>
-        )}
+        {children}
       </main>
     </HomeLayout>
   );

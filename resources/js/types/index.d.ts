@@ -96,7 +96,8 @@ export interface Conversation {
 export interface ConversationUser {
     conversation_id: number;
     user_id: number;
-    name: string | null;
+    client_id: number;
+    client_name: string | null;
     created_at: Date;
     updated_at: Date | null;
 }

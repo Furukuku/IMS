@@ -21,11 +21,13 @@ const SendMessageForm = ({ conversationId, socket, userId }: { conversationId: n
 
     if (messageData.content.trim().length > 0) {
       setIsProcessing(true);
-      socket.emit('sendMessage', messageData, () => {
-        setMessageData({
-          ...messageData,
-          content: ''
-        });
+      socket.emit('sendMessage', messageData, (status: { ok: boolean }) => {
+        if (status.ok) {
+          setMessageData({
+            ...messageData,
+            content: ''
+          });
+        }
         setIsProcessing(false);
       });
     }

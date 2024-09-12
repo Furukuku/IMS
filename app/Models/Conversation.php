@@ -17,11 +17,11 @@ class Conversation extends Model
     ];
 
     /**
-     * Gets the users that belongs to the conversation.
+     * Gets the senders (users) that belongs to the conversation.
      */
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class)->withPivot('name')->withTimestamps();
+        return $this->belongsToMany(User::class, 'conversation_user', 'conversation_id', 'user_id')->withPivot('client_id', 'client_name')->withTimestamps();
     }
 
     /**

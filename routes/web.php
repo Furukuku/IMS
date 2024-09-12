@@ -73,8 +73,10 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::get('/conversations', [ConversationController::class, 'index'])->name('conversations');
+    Route::get('/conversations/search', [ConversationController::class, 'search'])->name('conversations.search');
     Route::prefix('conversation')->controller(ConversationController::class)->name('conversation.')->group(function() {
         Route::get('/{id}', 'show')->name('view');
+        Route::get('', 'newMessage')->name('new-message');
     });
 
     Route::post('/logout', [LogoutController::class, 'logout']);

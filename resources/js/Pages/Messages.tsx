@@ -3,14 +3,23 @@ import SendMessageForm from "@/Components/SendMessageForm";
 import { autoFormatDateV2 } from "@/helpers/date";
 import HomeLayout from "@/Layouts/HomeLayout";
 import MessagesLayout from "@/Layouts/MessagesLayout";
-import { Conversation, Message } from "@/types";
+import { Conversation, Message, User } from "@/types";
 import { Link } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 import { IoMdArrowBack } from "react-icons/io";
 import { socket } from "@/socket";
 import ConversationMessages from "@/Components/ConversationMessages";
+import NewMessagePlacehold from "@/Components/NewMessagePlacehold";
 
-const Messages = ({ conversations, conversation }: { conversations: Conversation[]; conversation?: Conversation }) => {
+const Messages = ({ 
+  conversations, 
+  conversation, 
+  client 
+}: { 
+  conversations: Conversation[]; 
+  conversation?: Conversation; 
+  client?: User 
+}) => {
   const [isConnected, setIsConnected] = useState<boolean>(socket.connected);
   const [newMessage, setNewMessage] = useState<Message | null>(null);
 
@@ -44,6 +53,7 @@ const Messages = ({ conversations, conversation }: { conversations: Conversation
     <MessagesLayout 
       conversations={conversations}
       conversation={conversation}
+      client={client}
     >
       {isConnected && conversation && (
         <div className={`${conversation ? 'flex-1' : 'hidden sm:block'}`}>
@@ -59,7 +69,7 @@ const Messages = ({ conversations, conversation }: { conversations: Conversation
               alt="profile picture" 
               className="size-8 rounded-full"
             />
-            <p className="flex-1 w-20 grow font-semibold truncate">{conversation.name || conversation.conversation_user?.name}</p>
+            <p className="flex-1 w-20 grow font-semibold truncate">{conversation.name || conversation.conversation_user?.client_name}</p>
           </header>
           <ConversationMessages
             conversation={conversation}
@@ -68,6 +78,7 @@ const Messages = ({ conversations, conversation }: { conversations: Conversation
           />
         </div>
       )}
+      {client && <NewMessagePlacehold client={client} />}
     </MessagesLayout>
     // <HomeLayout>
     //   <main className="flex h-[calc(100dvh-49.6px)]">
