@@ -4,27 +4,27 @@ import { autoFormatDateV2 } from "@/helpers/date";
 import HomeLayout from "@/Layouts/HomeLayout";
 import MessagesLayout from "@/Layouts/MessagesLayout";
 import { Conversation, Message, User } from "@/types";
-import { Link } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 import { IoMdArrowBack } from "react-icons/io";
-import { socket } from "@/socket";
+import { socket, connectSocket } from "@/socket";
 import ConversationMessages from "@/Components/ConversationMessages";
 import NewMessagePlacehold from "@/Components/NewMessagePlacehold";
 
 const Messages = ({ 
   conversations, 
   conversation, 
-  client 
+  client
 }: { 
   conversations: Conversation[]; 
   conversation?: Conversation; 
-  client?: User 
+  client?: User
 }) => {
   const [isConnected, setIsConnected] = useState<boolean>(socket.connected);
   const [newMessage, setNewMessage] = useState<Message | null>(null);
 
   useEffect(() => {
-    socket.connect();
+    connectSocket();
 
     const onDisconnect = () => {
       setIsConnected(false);
@@ -38,13 +38,21 @@ const Messages = ({
       socket.emit('setRoom', { conversationId: conversation?.id });
       setIsConnected(true);
     }
-    
+
+    const onConnectError = (err: any) => {
+      console.error(err);
+      localStorage.removeItem('imsToken');
+      router.post(route('logout'));
+    };
+
+    socket.on('connect_error', onConnectError);
     socket.on('receivedMessage', onReceivedMessage);
     socket.on('disconnect', onDisconnect);
 
     return () => {
       socket.off('receivedMessage', onReceivedMessage);
       socket.off('disconnect', onDisconnect);
+      socket.off('connect_error', onConnectError)
       socket.disconnect();
     }
   }, []);

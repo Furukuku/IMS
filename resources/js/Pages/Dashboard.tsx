@@ -2,9 +2,10 @@ import { formatDate } from "@/helpers/date";
 import HomeLayout from "@/Layouts/HomeLayout";
 import { PageProps, Post } from "@/types";
 import { Link, usePage } from "@inertiajs/react";
+import { useEffect } from "react";
 
 const Dashboard = ({ posts }: { posts: Post[] }) => {
-  const { message } = usePage<PageProps>().props.flash;
+  const { message, token } = usePage<PageProps>().props.flash;
   const postList = posts.map(post => (
     <Link
       key={post.id}
@@ -20,6 +21,12 @@ const Dashboard = ({ posts }: { posts: Post[] }) => {
       </article>
     </Link>
   ));
+
+  useEffect(() => {
+    if (token) {
+      localStorage.setItem('imsToken', token);
+    }
+  }, []);
 
   return (
     <HomeLayout>

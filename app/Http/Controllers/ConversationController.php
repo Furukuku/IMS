@@ -48,6 +48,8 @@ class ConversationController extends Controller
 
     public function show($id)
     {
+        
+
         $conversations = User::find(auth()->id())->conversations()->latest('updated_at')->with('latestMessage')->get();
 
         $conversation = Conversation::with([

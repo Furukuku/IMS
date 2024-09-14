@@ -79,7 +79,7 @@ Route::middleware('auth')->group(function () {
         Route::get('', 'newMessage')->name('new-message');
     });
 
-    Route::post('/logout', [LogoutController::class, 'logout']);
+    Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
 });
 
 Route::middleware('guest')->group(function () {

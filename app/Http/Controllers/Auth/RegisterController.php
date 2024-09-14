@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Firebase\JWT\JWT;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
@@ -31,14 +32,29 @@ class RegisterController extends Controller
         $user->company_address = $request->company_address;
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
+
         $users = User::count();
-        if ($users === 0)
+        if ($users === 0) {
             $user->is_admin = true;
+        }
 
         $user->save();
 
+        if (!$user->is_admin) {
+            return to_route('login');
+        }
+
         Auth::login($user);
 
-        return to_route('dashboard');
+        $jwt_key = config('app.jwt_key');
+        $payload = [
+            'user_id' => $user->id,
+            'admin' => $user->is_admin,
+            'iat' => now()->timestamp,
+            'exp' => now()->addDay()->timestamp
+        ];
+        $jwt = JWT::encode($payload, $jwt_key, 'HS256');
+
+        return to_route('dashboard', ['token', $jwt]);
     }
 }

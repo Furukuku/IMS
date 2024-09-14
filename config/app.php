@@ -123,4 +123,9 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+
+    /**
+     * Json web token access key
+     */
+    'jwt_key' => env('JWT_KEY'),
 ];

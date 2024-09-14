@@ -12,7 +12,8 @@ const Header = ({ navBar, setNavBar }: NavBarProps) => {
   };
   const handleLogout = (e: MouseEvent<HTMLButtonElement>): void => {
     e.stopPropagation();
-    router.post('/logout');
+    localStorage.removeItem('imsToken');
+    router.post(route('logout'));
   };
 
   return (
