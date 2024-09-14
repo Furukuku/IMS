@@ -61,8 +61,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/show-more', 'showMore')->name('show-more');
     });
 
-    Route::get('/students', [StudentController::class, 'index'])->name('students');
-    Route::prefix('student')->controller(StudentController::class)->name('student.')->group(function() {
+    Route::get('/students', [StudentController::class, 'index'])->middleware('admin')->name('students');
+    Route::middleware('admin')->prefix('student')->controller(StudentController::class)->name('student.')->group(function() {
         Route::patch('/archive', 'archive')->name('archive');
         Route::patch('/approve', 'approve')->name('approve');
     });

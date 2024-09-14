@@ -5,8 +5,12 @@ import { IoIosClose } from "react-icons/io";
 import { NavItems } from "@/Interfaces/NavBar";
 import NavItem from "./NavItem";
 import { NavBarProps } from "@/Interfaces/NavBar";
+import { usePage } from "@inertiajs/react";
+import { PageProps } from "@/types";
 
 const NavBar = ({ navBar, setNavBar }: NavBarProps) => {
+  const { user } = usePage<PageProps>().props.auth;
+
   const navItems: NavItems[] = [
     {
       label: 'Dashboard',
@@ -38,6 +42,10 @@ const NavBar = ({ navBar, setNavBar }: NavBarProps) => {
       icon: <MdManageAccounts />
     },
   ];
+
+  if (!user.is_admin) {
+    navItems.splice(1, 1);
+  }
 
   const handleNavBarClose = (): void => {
     setNavBar(false);
