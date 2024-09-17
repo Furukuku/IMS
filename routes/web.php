@@ -10,6 +10,7 @@ use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\ReplyController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -66,7 +67,6 @@ Route::middleware('auth')->group(function () {
         Route::patch('/archive', 'archive')->name('archive');
         Route::patch('/approve', 'approve')->name('approve');
     });
-
     
     Route::prefix('/messages')->controller(MessageController::class)->name('messages.')->group(function() {
         Route::get('/show-more', 'showMore')->name('show-more');
@@ -77,6 +77,12 @@ Route::middleware('auth')->group(function () {
     Route::prefix('conversation')->controller(ConversationController::class)->name('conversation.')->group(function() {
         Route::get('/{id}', 'show')->name('view');
         Route::get('', 'newMessage')->name('new-message');
+    });
+
+    Route::inertia('/account', 'Account')->name('account');
+    Route::prefix('account')->controller(UserController::class)->name('account.')->group(function() {
+        Route::patch('update', 'update')->name('update');
+        Route::patch('change-password', 'changePassword')->name('change-password');
     });
 
     Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');

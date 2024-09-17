@@ -20,8 +20,8 @@ class RegisterController extends Controller
             'company_address' => ['required', 'max:100', 'string'],
             'student_no' => ['required', 'max:10', 'string'],
             'email' => ['required', 'email', 'max:100', 'unique:users', 'string'],
-            'password' => ['required', 'min:8', 'max:255', 'confirmed', 'string'],
-            'password_confirmation' => ['required', 'max:255', 'string']
+            'password' => ['required', 'min:8', 'max:100', 'confirmed', 'string'],
+            'password_confirmation' => ['required', 'max:100', 'string']
         ]);
         
         $user = new User();
@@ -35,6 +35,7 @@ class RegisterController extends Controller
 
         $users = User::count();
         if ($users === 0) {
+            $user->status = 'Active';
             $user->is_admin = true;
         }
 

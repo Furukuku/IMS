@@ -1,4 +1,4 @@
-import { ChangeEvent, DragEvent, useRef, useState } from "react";
+import { ChangeEvent, DragEvent, MouseEventHandler, useRef, useState } from "react";
 
 type setDataByObject<TForm> = (data: TForm) => void;
 
@@ -11,7 +11,7 @@ const DragNDrop = ({ files, setFiles }: DragNDropProps) => {
   const [draggableElement, setDraggableElement] = useState<string>('');
   const fileInput = useRef<HTMLInputElement>(null);
 
-  const handleBrowseClick = (): void => {
+  const handleBrowseClick: MouseEventHandler<HTMLButtonElement> = (): void => {
     if (fileInput.current)
       fileInput.current.click();
   };
