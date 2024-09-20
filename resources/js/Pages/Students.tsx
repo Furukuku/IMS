@@ -23,8 +23,16 @@ const Students = ({ students, status, search }: { students: PaginatedUsers; stat
   const [showApproveModal, setShowApproveModal] = useState<boolean>(false);
   const [showUnarchiveModal, setShowUnarchiveModal] = useState<boolean>(false);
   const actionModalElement = useRef<HTMLUListElement | null>(null);
-  const { url, props }: { url: string; props: PageProps } = usePage();
-  const urlQuery = url.slice(17);
+  const urlQuery: { status?: string; search?: string } = {};
+
+  if (search) {
+    urlQuery.search = search;
+  }
+
+  if (status && status != 'All') {
+    urlQuery.status = status;
+  }
+
   const handleActionModalClose = (): void => {
     setStudentOptionProp(null);
     setShowActionModal(false);
@@ -85,7 +93,6 @@ const Students = ({ students, status, search }: { students: PaginatedUsers; stat
                       <StudentRow
                         key={student.id}
                         student={student}
-                        // actionModal={studentOptionProp}
                         setActionModal={setStudentOptionProp}
                         showActionModal={setShowActionModal}
                       />
@@ -148,7 +155,7 @@ const Students = ({ students, status, search }: { students: PaginatedUsers; stat
                 setShowModal={setShowArchiveModal}
                 routeName="student.archive"
                 method="patch"
-                params={urlQuery != '' ? { status: urlQuery } : {}}
+                params={urlQuery}
               />
             )}
             {showUnarchiveModal && (
@@ -160,7 +167,7 @@ const Students = ({ students, status, search }: { students: PaginatedUsers; stat
                 setShowModal={setShowUnarchiveModal}
                 routeName="student.approve"
                 method="patch"
-                params={urlQuery != '' ? { status: urlQuery } : {}}
+                params={urlQuery}
               />
             )}
             {showApproveModal && (
@@ -172,7 +179,7 @@ const Students = ({ students, status, search }: { students: PaginatedUsers; stat
                 setShowModal={setShowApproveModal}
                 routeName="student.approve"
                 method="patch"
-                params={urlQuery != '' ? { status: urlQuery } : {}}
+                params={urlQuery}
               />
             )}
             </div>

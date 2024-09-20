@@ -87,8 +87,19 @@ class StudentController extends Controller
         $student->status = 'Archive';
         $student->save();
 
+        if (!is_null($request->input('status')) && !is_null($request->input('search'))) {
+            return to_route('students', [
+                'status' => $request->input('status'),
+                'search' => $request->input('search')
+            ])->with('message', "{$student->first_name} {$student->last_name} archived successfully!");
+        }
+
         if (!is_null($request->input('status'))) {
             return to_route('students', ['status' => $request->input('status')])->with('message', "{$student->first_name} {$student->last_name} archived successfully!");
+        }
+
+        if (!is_null($request->input('search'))) {
+            return to_route('students', ['search' => $request->input('search')])->with('message', "{$student->first_name} {$student->last_name} archived successfully!");
         }
 
         return to_route('students')->with('message', "{$student->first_name} {$student->last_name} archived successfully!");
@@ -103,8 +114,19 @@ class StudentController extends Controller
         $student->status = 'Active';
         $student->save();
 
+        if (!is_null($request->input('status')) && !is_null($request->input('search'))) {
+            return to_route('students', [
+                'status' => $request->input('status'),
+                'search' => $request->input('search')
+            ])->with('message', "{$student->first_name} {$student->last_name} approved successfully!");
+        }
+
         if (!is_null($request->input('status'))) {
             return to_route('students', ['status' => $request->input('status')])->with('message', "{$student->first_name} {$student->last_name} approved successfully!");
+        }
+
+        if (!is_null($request->input('search'))) {
+            return to_route('students', ['search' => $request->input('search')])->with('message', "{$student->first_name} {$student->last_name} approved successfully!");
         }
 
         return to_route('students')->with('message', "{$student->first_name} {$student->last_name} approved successfully!");
