@@ -36,7 +36,7 @@ use Illuminate\Support\Facades\Storage;
 // });
 
 // require __DIR__.'/auth.php';
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'approved', 'active'])->group(function () {
     Route::get('/', [PostController::class, 'index'])->name('dashboard');
     Route::prefix('post')->controller(PostController::class)->name('post.')->group(function() {
         Route::inertia('/add', 'AddPost')->name('add');
