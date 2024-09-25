@@ -1,32 +1,55 @@
-import { formatDate } from "@/helpers/date";
+import Posts from "@/Components/Posts";
 import HomeLayout from "@/Layouts/HomeLayout";
 import { PageProps, Post } from "@/types";
 import { Link, usePage } from "@inertiajs/react";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+import { BiLoaderAlt } from "react-icons/bi";
 
 const Dashboard = ({ posts }: { posts: Post[] }) => {
   const { flash, auth } = usePage<PageProps>().props;
-  const postList = posts.map(post => (
-    <Link
-      key={post.id}
-      href={route('post.view', { id: post.id })}
-    >
-      <article 
-        className="border px-5 py-4 rounded-md shadow mb-5 w-full"
-      >
-        <div className="flex">
-          <p className="text-lg font-semibold grow w-20 truncate">{post.title}</p>
-        </div>
-        <p className="text-xs truncate">{formatDate(post.created_at)}</p>
-      </article>
-    </Link>
-  ));
+  const [currPosts, setCurrPosts] = useState<Post[]>(posts);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  const initialLoad = useRef<boolean>(true);
+  const botElement = useRef<HTMLParagraphElement | null>(null);
+
+  const getMorePosts = async () => {
+    try {
+      const response = await fetch(route('post.show-more', { skip: currPosts.length, limit: 10 }));
+      const data = await response.json();
+      setCurrPosts(prev => [...prev, ...data]);
+      setHasMore(!(data.length < 10));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const observerCallback = (entries: IntersectionObserverEntry[]) => {
+    const firstEntry = entries[0];
+    if (firstEntry.isIntersecting && hasMore) {
+      getMorePosts();
+    }
+
+  };
 
   useEffect(() => {
     if (flash.token) {
       localStorage.setItem('imsToken', flash.token);
     }
-  }, []);
+    
+    const observer = new IntersectionObserver(observerCallback);
+
+    if (botElement.current && observer) {
+      observer.observe(botElement.current);
+    }
+
+    if (initialLoad.current) initialLoad.current = false;
+
+    return () => {
+      if (botElement.current && observer) {
+        observer.unobserve(botElement.current);
+      }
+    }
+  }, [currPosts, botElement.current, initialLoad.current]);
 
   return (
     <HomeLayout>
@@ -42,7 +65,16 @@ const Dashboard = ({ posts }: { posts: Post[] }) => {
           </div>
         )}
         <div className="border bg-white flex-1 rounded p-5 sm:p-10 pb-2 sm:pb-5 shadow">
-          {postList.length > 0 ? postList : <p className="mb-5 text-xl text-center text-zinc-500">You have no post yet.</p>}
+          {currPosts.length > 0 ? (
+            <Posts posts={currPosts} /> 
+          ): (
+            <p className="mb-5 text-xl text-center text-zinc-500">{auth.user.is_admin ? 'You have no post yet.' : 'No posts available.'}</p>
+          )}
+          {(!initialLoad.current && hasMore && currPosts.length > 0) && 
+            <p ref={botElement} className="text-xl">
+              <BiLoaderAlt className="mx-auto animate-spin duration-300" />
+            </p>
+          }
         </div>
       </main>
     </HomeLayout>

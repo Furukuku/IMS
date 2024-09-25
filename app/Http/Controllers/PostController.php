@@ -19,8 +19,18 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::latest()->get();
+        $posts = Post::latest()->latest('id')->limit(10)->get();
         return Inertia::render('Dashboard', ['posts' => $posts]);
+    }
+
+    public function showMore(Request $request)
+    {
+        $posts = Post::latest()
+            ->latest('id')
+            ->skip($request->input('skip'))
+            ->limit($request->input('limit'))
+            ->get();
+        return $posts;
     }
 
     /**

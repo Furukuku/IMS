@@ -40,6 +40,7 @@ Route::middleware(['auth', 'approved', 'active'])->group(function () {
     Route::get('/', [PostController::class, 'index'])->name('dashboard');
     Route::get('/post/{id}', [PostController::class, 'show'])->name('post.view');
     Route::inertia('/add', 'AddPost')->middleware('admin')->name('post.add');
+    Route::get('/posts/show-more', [PostController::class, 'showMore'])->name('post.show-more');
     Route::middleware('admin')->prefix('post')->controller(PostController::class)->name('post.')->group(function() {
         Route::post('/add', 'store');
         Route::get('/edit/{post}', 'edit')->name('edit');
