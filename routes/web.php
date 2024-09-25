@@ -38,11 +38,11 @@ use Illuminate\Support\Facades\Storage;
 // require __DIR__.'/auth.php';
 Route::middleware(['auth', 'approved', 'active'])->group(function () {
     Route::get('/', [PostController::class, 'index'])->name('dashboard');
-    Route::prefix('post')->controller(PostController::class)->name('post.')->group(function() {
-        Route::inertia('/add', 'AddPost')->name('add');
+    Route::get('/post/{id}', [PostController::class, 'show'])->name('post.view');
+    Route::inertia('/add', 'AddPost')->middleware('admin')->name('post.add');
+    Route::middleware('admin')->prefix('post')->controller(PostController::class)->name('post.')->group(function() {
         Route::post('/add', 'store');
-        Route::get('/{id}', 'show')->name('view');
-        Route::get('/edit/{id}', 'edit')->name('edit');
+        Route::get('/edit/{post}', 'edit')->name('edit');
         Route::put('/update', 'update')->name('update');
         Route::delete('/destroy', 'destroy')->name('destroy');
     });
@@ -75,7 +75,7 @@ Route::middleware(['auth', 'approved', 'active'])->group(function () {
     Route::get('/conversations', [ConversationController::class, 'index'])->name('conversations');
     Route::get('/conversations/search', [ConversationController::class, 'search'])->name('conversations.search');
     Route::prefix('conversation')->controller(ConversationController::class)->name('conversation.')->group(function() {
-        Route::get('/{id}', 'show')->name('view');
+        Route::get('/{conversation}', 'show')->name('view');
         Route::get('', 'newMessage')->name('new-message');
     });
 

@@ -9,6 +9,7 @@ use Illuminate\Validation\Rules\File;
 use Illuminate\Support\Facades\Storage;
 use App\Models\File as FileModel;
 use App\Rules\LimitFiles;
+use Illuminate\Support\Facades\Gate;
 
 class PostController extends Controller
 {
@@ -46,6 +47,8 @@ class PostController extends Controller
      */
     public function store(Request $request) 
     {
+        Gate::authorize('create', Post::class);
+
         $request->validate([
             'title' => ['required', 'max:100', 'string'],
             'description' => ['required', 'max:2000', 'string'],
@@ -89,9 +92,11 @@ class PostController extends Controller
      * Renders the post editing page.
      * @param \Illuminate\Http\Request $request
      */
-    public function edit(Request $request)
+    public function edit(Post $post)
     {
-        $post = Post::with('files')->find($request->id);
+        Gate::authorize('edit', $post);
+
+        $post->load('files');
         return Inertia::render('EditPost', ['post' => $post]);
     }
 
@@ -100,7 +105,11 @@ class PostController extends Controller
      * @param \Illuminate\Http\Request $request
      */
     public function update(Request $request)
-    {  
+    {
+        $post = Post::findOrFail($request->id);
+
+        Gate::authorize('update', $post);
+
         $request->validate([
             'id' => ['required', 'integer'],
             'title' => ['required', 'max:100', 'string'],
@@ -131,7 +140,6 @@ class PostController extends Controller
             }
         }
 
-        $post = Post::find($request->id);
         $post->title = $request->title;
         $post->description = $request->description;
         $post->is_uploadable = $request->is_uploadable;
@@ -158,7 +166,9 @@ class PostController extends Controller
      */
     public function destroy(Request $request)
     {
-        $post = Post::with(['files'])->find($request->post_id);
+        $post = Post::with(['files'])->findOrFail($request->id);
+
+        Gate::authorize('delete', $post);
 
         if ($post) {
             foreach ($post->files as $file) {

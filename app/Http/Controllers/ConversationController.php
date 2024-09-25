@@ -8,7 +8,10 @@ use App\Models\Message;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
+
+use function Laravel\Prompts\error;
 
 class ConversationController extends Controller
 {
@@ -46,18 +49,16 @@ class ConversationController extends Controller
     //     return to_route('conversation.view', ['id' => $conversation_user->conversation_id]);
     // }
 
-    public function show($id)
+    public function show(Conversation $conversation)
     {
-        
+        Gate::authorize('view', $conversation);
 
-        $conversations = User::find(auth()->id())->conversations()->latest('updated_at')->with('latestMessage')->get();
-
-        $conversation = Conversation::with([
+        $conversation->load([
             'messages' => fn($query) => $query->with('user')->latest()->take(10),
             'conversationUser'
-        ])->find($id);
-
+        ]);
         $conversation->setRelation('messages', $conversation->messages->sortBy('created_at')->values());
+        $conversations = User::find(auth()->id())->conversations()->latest('updated_at')->with('latestMessage')->get();
         
         return Inertia::render('Messages', [
             'conversations' => $conversations,
@@ -67,14 +68,16 @@ class ConversationController extends Controller
 
     public function newMessage(Request $request) 
     {
-        $conversation_user = ConversationUser::where('user_id', auth()->id())->where('client_id', $request->user)->first();
+        Gate::authorize('create', [Conversation::class, $request->user_id]);
+
+        $conversation_user = ConversationUser::where('user_id', auth()->id())->where('client_id', $request->user_id)->first();
         
         if (!is_null($conversation_user)) {
-            return to_route('conversation.view', ['id' => $conversation_user->conversation_id]);
+            return to_route('conversation.view', ['conversation' => $conversation_user->conversation_id]);
         }
 
         $conversations = User::find(auth()->id())->conversations()->latest('updated_at')->with('latestMessage')->get();
-        $client = User::find($request->user);
+        $client = User::find($request->user_id);
 
         return Inertia::render('Messages', [
             'conversations' => $conversations,

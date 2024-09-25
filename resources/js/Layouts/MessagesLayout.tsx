@@ -27,10 +27,10 @@ const MessagesLayout = ({
           />
           {searchedUsers ? (
             <ul className="w-full divide-y-4 divide-transparent overflow-y-auto">
-                {searchedUsers.map(convo => (
-                  <li key={convo.id}>
+                {searchedUsers.map(searchedUser => (
+                  <li key={searchedUser.id}>
                     <Link 
-                      href={route('conversation.new-message', { user: convo.id })}
+                      href={route('conversation.new-message', { user_id: searchedUser.id })}
                       as="button"
                       className={`w-full flex gap-3 items-center py-2 px-4 rounded-lg hover:bg-zinc-200`}
                     >
@@ -40,7 +40,7 @@ const MessagesLayout = ({
                         className="size-7 rounded-full"
                       />
                       <div className="flex-1 grid divide-y-2 divide-transparent">
-                        <p className="text-start text-sm font-semibold truncate">{convo.first_name} {convo.last_name}</p>
+                        <p className="text-start text-sm font-semibold truncate">{searchedUser.first_name} {searchedUser.last_name}</p>
                       </div>
                     </Link>
                   </li>

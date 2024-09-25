@@ -40,7 +40,7 @@ const ViewPost = ({ post }: { post: Post }) => {
               <p className="text-3xl font-semibold mb-1">{post.title}</p>
               <p className="text-sm text-zinc-700">{formatDate(post.created_at)}</p>
             </div>
-            {user.id === post.user_id && (
+            {(user.is_admin && user.id === post.user_id) && (
               <div className="relative">
                 <button 
                   className="text-xl z-0"
@@ -53,7 +53,7 @@ const ViewPost = ({ post }: { post: Post }) => {
                     <ul className="absolute right-2 top-3 bg-white shadow-sm border rounded text-sm divide-y-4 divide-transparent py-1 z-40">
                       <li>
                         <Link 
-                          href={route('post.edit', { id: post.id })}
+                          href={route('post.edit', { post: post.id })}
                           method="get"
                           className="w-full text-start px-3 hover:bg-zinc-200"
                           as="button"

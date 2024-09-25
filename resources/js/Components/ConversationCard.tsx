@@ -20,7 +20,7 @@ const ConversationCard = ({
   return (
     <li>
       <Link 
-        href={route('conversation.view', { id: conversationId })}
+        href={route('conversation.view', { conversation: conversationId })}
         className={`flex gap-3 items-center py-2 px-4 rounded-lg ${conversationId == activeConversationId && 'bg-zinc-100'} hover:bg-zinc-200`}
       >
         <img 
